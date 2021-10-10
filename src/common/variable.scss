@@ -1,0 +1,41 @@
+$mall-blue: #2D84ED;
+$mall-red: #DB2D2D;
+$mall-yellow: #FABD2C;
+
+@mixin wrap($width: 100%) {
+  width: $width;
+  margin: 0 auto;
+}
+
+@mixin flex($justify: unset, $align: unset, $direction: row) {
+    display: flex;
+    justify-content: $justify;
+    align-items: $align;
+    flex-direction: $direction;
+}
+  
+@mixin ellipsis($height, $row: 1) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: $row;
+    line-clamp: $row;
+    -webkit-box-orient: vertical;
+    line-height: $height/$row;
+    min-height: $height;
+    word-wrap: break-word;
+}
+
+@mixin imgWrap($width, $height) {
+  width: $width;
+  height: $height;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}

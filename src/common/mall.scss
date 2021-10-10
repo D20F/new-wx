@@ -1,0 +1,110 @@
+.mall-status-red {
+    color: #ee3c3c;
+}
+
+.mall-status-yellow {
+    color: #f99d3e;
+}
+
+.mall-status-blue {
+    color: #2d84ed;
+}
+
+.mall-status-gray {
+    color: #999999;
+}
+
+.mall-status-orange {
+    color: #ed5b5b;
+}
+
+.mall-status-green {
+    color: #0cb114;
+}
+
+.bottom-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 24rpx;
+}
+
+.btns {
+    @include flex(space-between, center);
+    image {
+        margin-right: 12rpx;
+        height: 40rpx;
+    }
+    .btn {
+        width: 338rpx;
+        height: 90rpx;
+        border-radius: 22rpx;
+        color: #fff;
+        font-size: 32rpx;
+        border: none;
+        margin: 0;
+        padding: 0;
+        @include flex(center, center);
+        &.btn-yellow {
+            background-color: $mall-yellow;
+        }
+        &.btn-red {
+            background-color: $mall-red;
+        }
+    }
+}
+
+.mall-card {
+    background-color: #fff;
+    padding: 28rpx 24rpx;
+    border-radius: 22rpx;
+    margin-bottom: 4rpx;
+}
+
+.num-input {
+    /deep/ .u-icon-plus,
+    /deep/ .u-icon-minus {
+        width: 50rpx;
+        height: 50rpx;
+        border-radius: 50%;
+        background-color: $mall-red !important;
+        uni-text {
+            color: #fff !important;
+        }
+    }
+    /deep/ .u-icon-disabled {
+        background: #f6f6f6 !important;
+        border: 2rpx solid #d6d6d6;
+        uni-text {
+            color: #666 !important;
+        }
+    }
+    /deep/ .u-number-input {
+        width: 60rpx !important;
+        background-color: transparent !important;
+    }
+}
+
+.radio-icon {
+    width: 54rpx;
+    @include flex(flex-start, center);
+    .round {
+        width: 26rpx;
+        height: 26rpx;
+        border-radius: 50%;
+        border: 2rpx solid $mall-blue;
+        position: relative;
+        &.ed::after {
+            content: "";
+            width: 18rpx;
+            height: 18rpx;
+            background-color: $mall-blue;
+            border-radius: 50%;
+            position: absolute;
+            top: 2rpx;
+            left: 2rpx;
+        }
+    }
+}

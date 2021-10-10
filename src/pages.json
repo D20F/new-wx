@@ -1,0 +1,447 @@
+{
+    "pages": [
+        {
+            "path": "pages/home/home",
+            "style": {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": true,
+                "onReachBottomDistance": 50,
+                "app-plus": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/home/kashgar",
+            "style": {
+                "navigationBarTitleText": "图文介绍"
+            }
+        },
+        {
+            "path": "pages/civil/civil",
+            "style": {
+                "navigationBarTitleText": "便民服务"
+            }
+        },
+        {
+            "path": "pages/my/my",
+            "style": {
+                "app-plus": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/my/userInformation/index",
+            "style": {
+                "navigationBarTitleText": "个人信息"
+            }
+        },
+        {
+            "path": "pages/my/userInformation/myAddress/index",
+            "style": {
+                "navigationBarTitleText": "我的地址"
+            }
+        },
+        {
+            "path": "pages/my/userInformation/addAddress/index",
+            "style": {
+                "navigationBarTitleText": "添加地址"
+            }
+        },
+        {
+            "path": "pages/my/complaint/index",
+            "style": {
+                "navigationBarTitleText": "投诉反馈"
+            }
+        },
+        {
+            "path": "pages/my/complaintRecord/index",
+            "style": {
+                "navigationBarTitleText": "我的投诉记录"
+            }
+        },
+        {
+            "path": "pages/my/about/index",
+            "style": {
+                "navigationBarTitleText": "关于我们"
+            }
+        },
+        {
+            "path": "pages/my/serviceHotline/index",
+            "style": {
+                "navigationBarTitleText": "服务热线"
+            }
+        },
+        {
+            "path": "pages/my/message/message",
+            "style": {
+                "navigationBarTitleText": "我的消息"
+            }
+        },
+        {
+            "path": "pages/my/message/systemNotification/index",
+            "style": {
+                "navigationBarTitleText": "系统通知"
+            }
+        },
+        {
+            "path": "pages/my/message/replyNotification/index",
+            "style": {
+                "navigationBarTitleText": "回复通知"
+            }
+        },
+        {
+            "path": "pages/appointment/orderDetails/index",
+            "style": {
+                "navigationBarTitleText": "订单详情"
+            }
+        },
+        {
+            "path": "pages/appointment/orderList/index",
+            "style": {
+                "navigationBarTitleText": "办证预约"
+            }
+        },
+        {
+            "path": "pages/appointment/protocol/index",
+            "style": {
+                "navigationBarTitleText": "办证须知"
+            }
+        },
+        {
+            "path": "pages/appointment/reserve/index",
+            "style": {
+                "navigationBarTitleText": "办证预约"
+            }
+        },
+        {
+            "path": "pages/travel/travel",
+            "style": {
+                "navigationBarTitleText": "旅行社团"
+            }
+        },
+        {
+            "path": "pages/travel/orderDetails/index",
+            "style": {
+                "navigationBarTitleText": "订单详情"
+            }
+        },
+        {
+            "path": "pages/travel/orderList/index",
+            "style": {
+                "navigationBarTitleText": "旅行社团"
+            }
+        },
+        {
+            "path": "pages/travel/reserveTravel/index",
+            "style": {
+                "navigationBarTitleText": "预约社团"
+            }
+        },
+        {
+            "path": "pages/hotel/hotel",
+            "style": {
+                "navigationBarTitleText": "旅游住宿"
+            }
+        },
+        {
+            "path": "pages/hotel/hotelDetails/index",
+            "style": {
+                "app-plus": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/hotel/reserveHotel/index",
+            "style": {
+                "navigationBarTitleText": "提交订单"
+            }
+        },
+        {
+            "path": "pages/hotel/orderList/index",
+            "style": {
+                "navigationBarTitleText": "我的住宿"
+            }
+        },
+        {
+            "path": "pages/hotel/orderDetails/index",
+            "style": {
+                "navigationBarTitleText": "订单详情"
+            }
+        },
+        {
+            "path": "pages/hotel/comment/index",
+            "style": {
+                "navigationBarTitleText": "评价"
+            }
+        },
+        {
+            "path": "pages/tickets/tickets",
+            "style": {
+                "navigationBarTitleText": "门票预订"
+            }
+        },
+        {
+            "path": "pages/tickets/ticketsDetails/index",
+            "style": {
+                "app-plus": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/tickets/reserveTickets/index",
+            "style": {
+                "navigationBarTitleText": "提交订单"
+            }
+        },
+        {
+            "path": "pages/tickets/orderList/index",
+            "style": {
+                "navigationBarTitleText": "我的门票"
+            }
+        },
+        {
+            "path": "pages/tickets/orderDetails/index",
+            "style": {
+                "navigationBarTitleText": "订单详情"
+            }
+        },
+        {
+            "path": "pages/tickets/comment/index",
+            "style": {
+                "navigationBarTitleText": "评价"
+            }
+        },
+        {
+            "path": "pages/carHire/index",
+            "style": {
+                "app-plus": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/attractions/list",
+            "style": {
+                "navigationBarTitleText": "景区列表"
+            }
+        },
+        {
+            "path": "pages/attractions/details",
+            "style": {
+                "app-plus": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/travellingGuideline/list",
+            "style": {
+                "navigationBarTitleText": "旅游攻略"
+            }
+        },
+        {
+            "path": "pages/travellingGuideline/details",
+            "style": {
+                "app-plus": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/travellingGuideline/addGuideline",
+            "style": {
+                "navigationBarTitleText": "发布攻略"
+            }
+        },
+        {
+            "path": "pages/throughCar/through",
+            "style": {
+                "navigationBarTitleText": "喀塔直通车"
+            }
+        },
+        {
+            "path": "pages/throughCar/orderDetails/index",
+            "style": {
+                "navigationBarTitleText": "订单详情"
+            }
+        },
+        {
+            "path": "pages/throughCar/orderList/index",
+            "style": {
+                "navigationBarTitleText": "直通车"
+            }
+        },
+        {
+            "path": "pages/throughCar/reserveThrough/index",
+            "style": {
+                "navigationBarTitleText": "预约直通车"
+            }
+        },
+        {
+            "path": "pages/throughCar/protocol/index",
+            "style": {
+                "navigationBarTitleText": "协议"
+            }
+        }
+    ],
+    "subPackages": [
+        {
+            "root": "mall",
+            "pages": [
+                {
+                    "path": "index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "喀什礼物",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "commodityList/index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "commodity/index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "",
+                        "enablePullDownRefresh": true,
+                        "onReachBottomDistance": 50,
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "detail/index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "详情",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "cart/index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "购物车",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "buys/index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "提交订单",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "order/index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "我的订单",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "refund/index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "申请退款",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "refund/reason",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "申请退款",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "preloadRule": {
+        "mall/index": {
+            "network": "all",
+            "packages": [
+                "mall"
+            ]
+        }
+    },
+    "permission": {
+        "scope.userLocation": {
+            "desc": "你的位置信息将用于小程序的地图"
+        }
+    },
+    "globalStyle": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "",
+        "navigationBarBackgroundColor": "#2D84ED",
+        "backgroundColor": "#2D84ED"
+    },
+    "easycom": {
+        "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+    },
+    "tabBar": {
+        "color": "#999999",
+        "selectedColor": "#2D84ED",
+        "borderStyle": "black",
+        "backgroundColor": "#ffffff",
+        "list": [
+            {
+                "pagePath": "pages/home/home",
+                "iconPath": "static/tabbar/home.png",
+                "selectedIconPath": "static/tabbar/homes.png",
+                "text": "首页"
+            },
+            {
+                "pagePath": "pages/civil/civil",
+                "iconPath": "static/tabbar/server.png",
+                "selectedIconPath": "static/tabbar/servers.png",
+                "text": "便民服务"
+            },
+            {
+                "pagePath": "pages/my/my",
+                "iconPath": "static/tabbar/my.png",
+                "selectedIconPath": "static/tabbar/mys.png",
+                "text": "我的"
+            }
+        ]
+    }
+}
