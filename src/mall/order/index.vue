@@ -3,7 +3,7 @@
     <view class="content">
       <view class="goods">
         <view class="status">
-          <view class="left">订单编号：1234567890123456</view>
+          <view class="left">订单编号：{{ order.id }}</view>
           <view class="right">
             <view class="mall-status-red" v-if="orderStatus == 1">待付款</view>
             <view class="mall-status-yellow" v-else-if="orderStatus == 2">
@@ -20,63 +20,35 @@
             </view>
           </view>
         </view>
-        <cartItem
-          type="order"
-          :dataSource="item"
-          :dataIndex="index"
-          @check="itemCheck"
-          @countChange="countChange"
-          v-for="(item, index) in cartList"
-          :key="index"
-        />
+        <view v-if="orderStatus == 2">
+          <cartItem
+            type="refund"
+            :dataSource="item"
+            :dataIndex="index"
+            @check="itemCheck"
+            @countChange="countChange"
+            v-for="(item, index) in order.ordersProductList"
+            :key="index"
+          />
+        </view>
+        <view v-else>
+          <cartItem
+            type="order"
+            :dataSource="item"
+            :dataIndex="index"
+            v-for="(item, index) in order.ordersProductList"
+            :key="index"
+          />
+        </view>
       </view>
       <addrSele :dataSource="addr" type="read" />
-      <view class="mall-card row-item">
+      <view class="mall-card row-item" v-if="order.note">
         <view class="label">订单备注</view>
-        <view class="value">
-          备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注
-        </view>
+        <view class="value">{{ order.note }}</view>
       </view>
-      <view class="mall-card row-item">
+      <view class="mall-card row-item" v-if="orderStatus != 1">
         <view class="label">交易时间</view>
-        <view class="value">2021-09-01 12:00:00</view>
-      </view>
-      <template
-        v-if="
-          orderStatus == 5 ||
-          orderStatus == 6 ||
-          orderStatus == 7 ||
-          orderStatus == 8
-        "
-      >
-        <addrSele :dataSource="addr" type="read" addrTitle="商家收货地址" />
-      </template>
-      <view class="mall-card">
-        <view class="row-item">
-          <view class="label">退款原因</view>
-          <view class="value">不想要或多拍了</view>
-        </view>
-        <view class="row-item">
-          <view class="label">退款编号</view>
-          <view class="value">111111111111111111</view>
-        </view>
-        <view class="row-item">
-          <view class="label">申请时间</view>
-          <view class="value">2021-09-01 12:00:00</view>
-        </view>
-      </view>
-      <view class="remark mall-card">
-        <u-field
-          v-model="remark"
-          label="物流单号"
-          placeholder="请填写单号"
-          :border-bottom="false"
-          :clearable="false"
-        >
-        </u-field>
-      </view>
-      <view class="tips">
-        请按照商家提供的收货地址寄回货物，并提供物流单号，以便商家处理退款订单。
+        <view class="value">{{ order.payTime }}</view>
       </view>
     </view>
     <view class="bottom-fixed">
@@ -86,74 +58,85 @@
           orderStatus == 1 ||
           orderStatus == 2 ||
           orderStatus == 3 ||
-          orderStatus == 4
+          orderStatus == 5
         "
       >
         <view class="price">
           总价
           <view class="unit">¥</view>
-          {{ total }}
+          {{ order.payAmount }}
         </view>
       </view>
       <view
         class="total"
-        v-if="
-          orderStatus == 5 ||
-          orderStatus == 6 ||
-          orderStatus == 7 ||
-          orderStatus == 8
-        "
+        v-if="orderStatus == 6 || orderStatus == 7 || orderStatus == 8"
       >
         <view class="price">
           退款总金额
           <view class="unit">¥</view>
-          {{ total }}
+          {{ order.payAmount }}
         </view>
       </view>
       <view class="btns">
         <template v-if="orderStatus == 1">
-          <u-button :hair-line="false" class="btn btn-yellow" @click="buy"
-            >取消订单</u-button
+          <view
+            :hair-line="false"
+            class="btn btn-yellow"
+            @click="cancelOrder"
+            >取消订单</view
           >
-          <u-button :hair-line="false" class="btn btn-red" @click="del"
-            >去支付</u-button
+          <view :hair-line="false" class="btn btn-red" @click="buy"
+            >去支付</view
           >
         </template>
         <template v-else-if="orderStatus == 2">
-          <u-button
+          <view
             style="width: 100%"
             :hair-line="false"
             class="btn btn-yellow"
-            @click="buy"
-            >取消订单</u-button
+            @click="refund"
+            >申请退款</view
           >
         </template>
         <template v-else-if="orderStatus == 3">
-          <u-button :hair-line="false" class="btn btn-yellow" @click="buy"
-            >申请退款</u-button
-          >
-          <u-button :hair-line="false" class="btn btn-red" @click="del"
-            >确认收货</u-button
-          >
-        </template>
-        <template v-else-if="orderStatus == 4">
-          <u-button
-            style="width: 100%"
+          <view
             :hair-line="false"
-            class="btn btn-red"
-            @click="del"
-            >申请售后</u-button
+            class="btn btn-yellow"
+            @click="
+              jumpTo('mall/refund/index', {
+                orderId: orderId,
+                status: orderStatus,
+              })
+            "
+            >申请退款</view
+          >
+          <view :hair-line="false" class="btn btn-red" @click="receive"
+            >确认收货</view
           >
         </template>
         <template v-else-if="orderStatus == 5">
-          <u-button
+          <view
+            style="width: 100%"
+            :hair-line="false"
+            class="btn btn-red"
+            @click="
+              jumpTo('mall/refund/index', {
+                orderId: orderId,
+                status: orderStatus,
+              })
+            "
+            >申请售后</view
+          >
+        </template>
+        <!-- <template v-else-if="orderStatus == 5">
+          <view
             style="width: 100%"
             :hair-line="false"
             class="btn btn-red"
             @click="del"
-            >提交</u-button
+            >提交</view
           >
-        </template>
+        </template> -->
       </view>
     </view>
   </view>
@@ -161,50 +144,161 @@
 <script>
 import cartItem from "@/component/business/mall/cartItem";
 import addrSele from "@/component/business/mall/addrSele";
+import { orderInfo, editOrder, wxPay, refundOrder } from "@/api/mall";
+import { setStorage } from "@/utils/storage.js";
 export default {
   components: { cartItem, addrSele },
   data() {
     return {
-      orderStatus: 6,
-      cartList: [
-        {
-          price: 35,
-          count: 1,
-          stock: 10,
-          sku: "白色",
-          title: "北国风光，千里冰封，万里雪飘",
-          image:
-            "http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg",
-        },
-        {
-          price: 135,
-          count: 3,
-          stock: 1000,
-          sku: "黑色无线充电",
-          title: "北国风光，千里冰封，万里雪飘",
-          image:
-            "http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg",
-        },
-        {
-          price: 3.3,
-          count: 1,
-          stock: 5,
-          sku: "白色",
-          title: "北国风光，千里冰封，万里雪飘",
-          image:
-            "http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg",
-        },
-      ],
-      total: 0,
-      addr: {
-        name: "收货人昵称",
-        phone: "12345678900",
-        content: "这里是收货地址这里是收货地址这里是收货地址这里是收货地址",
-      },
+      orderId: 0,
+      order: {},
+      orderStatus: 0,
+      addr: {},
+      refundIndexs: [],
       remark: "",
     };
   },
-  methods: {},
+  onLoad(options) {
+    // let d = {
+    //   nickname: "zlzl",
+    //   avatar:
+    //     "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
+    //   openId: "oPuSl4ulu5Nuo3fvuQpoes2Vnc5c",
+    //   token: "863a27457ca3475ab222e1137fdaf3c1",
+    //   userId: "3595314797150208",
+    // };
+    // setStorage("account", d.nickname);
+    // setStorage("avatar", d.avatar);
+    // setStorage("openId", d.openId);
+    // setStorage("token", d.token);
+    // setStorage("userId", d.userId);
+    // this.$store.commit("accountFun", d.nickname);
+    // this.$store.commit("avatarFun", d.avatar);
+    // this.$store.commit("openIdFun", d.openId);
+    // this.$store.commit("tokenFun", d.token);
+    // this.$store.commit("userIdFun", d.userId);
+    this.orderId = options.orderId;
+    this.orderStatus = options.status;
+    this.getOrders();
+  },
+  methods: {
+    getOrders() {
+      orderInfo(this.orderId).then((res) => {
+        let d = res.data;
+        this.order = d;
+        this.addr = {
+          name: d.addressName,
+          mobile: d.addressMobile,
+          area: "",
+          address: d.address,
+        };
+      });
+    },
+    cancelOrder() {
+      editOrder({
+        id: this.orderId,
+        status: -1,
+      }).then((res) => {
+        uni.showToast({
+          title: "取消成功",
+        });
+        setTimeout(() => {
+          this.$u.route({
+            url: "mall/commodity/index",
+            type: "redirectTo",
+          });
+        }, 1500);
+      });
+    },
+    buy() {
+      let that = this;
+      wxPay({
+        orderId: this.orderId,
+      }).then((res) => {
+        uni.requestPayment({
+          provider: "wxpay",
+          timeStamp: res.data.timeStamp,
+          nonceStr: res.data.nonceStr,
+          package: res.data.packageValue,
+          signType: res.data.signType,
+          paySign: res.data.paySign,
+          success: function (res2) {
+            that.$u.route({
+              url: "mall/commodity/index",
+              params: {
+                status: 1,
+              },
+              type: "redirectTo",
+            });
+          },
+          fail: function (err) {
+            that.$u.route({
+              url: "mall/commodity/index",
+              params: {
+                status: 0,
+              },
+              type: "redirectTo",
+            });
+          },
+        });
+      });
+    },
+    itemCheck(checked, i) {
+      if (checked) {
+        this.refundIndexs.push(i);
+      } else {
+        let index = this.refundIndexs.findIndex((item) => item === i);
+        this.refundIndexs.splice(index, 1);
+      }
+    },
+    refund() {
+      if (!this.refundIndexs.length) {
+        uni.showToast({
+          icon: "error",
+          title: "请选择商品",
+        });
+      } else {
+        let ids = [];
+        for (let i = 0; i < this.refundIndexs.length; i++) {
+          ids.push(this.order.ordersProductList[this.refundIndexs[i]].id);
+        }
+        refundOrder({
+          ordersId: this.orderId,
+          ordersProductId: ids,
+          resultType: 1,
+          goods: 1,
+        }).then((res) => {
+          uni.showToast({
+            title: "申请成功",
+          });
+          setTimeout(() => {
+            this.$u.route({
+              url: "mall/commodity/index",
+              type: "redirectTo",
+            });
+          }, 1500);
+        });
+      }
+    },
+    receive() {
+      editOrder({
+        id: this.orderId,
+        status: 5,
+      }).then((res) => {
+        this.orderStatus = 5;
+        uni.showToast({
+          title: "操作成功",
+        });
+      });
+    },
+    jumpTo(url, params) {
+      this.$u.route({
+        url: url,
+        params: params,
+        type: "redirectTo",
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

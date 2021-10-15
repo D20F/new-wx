@@ -13,12 +13,7 @@
                 <text>微信登录</text>
                 <text>申请账号中,请授权用户信息</text>
             </view>
-            <button
-                type="default"
-                class="btn"
-                open-type="getUserInfo"
-                @getuserinfo="getuserinfo"
-            >
+            <button type="default" class="btn" @click="getuserinfo">
                 授权用户信息
             </button>
         </view>
@@ -80,69 +75,67 @@ export default {
                 },
             });
         },
-        getuserinfo(e) {
+        getuserinfo() {
             let that = this;
+            wx.getUserProfile({
+                desc: "获取微信用户的头像和昵称",
+                success: function (res) {
+                    // console.log(res);
+                    let data = {
+                        encryptedData: res.encryptedData,
+                        iv: res.iv,
+                        openId: that.wx.openId,
+                    };
+                    authAppLogin(data)
+                        .then((v) => {
+                            console.log(v);
+                            if (v.status == 200) {
+                                setStorage("account", res.userInfo.nickName);
+                                setStorage("avatar", res.userInfo.avatarUrl);
 
-            console.log(e);
-            console.log(this.wx);
+                                setStorage("openId", v.data.appUser.openId);
+                                setStorage(
+                                    "token",
+                                    v.data.tokenEntity.accessToken
+                                );
+                                setStorage("userId", v.data.tokenEntity.userId);
 
-            if (e.detail.errMsg == "getUserInfo:fail user deny") {
-                console.log("拒绝授权");
-                this.close();
-            } else {
-                //允许授权
-                // e.detail.encryptedData      //加密的用户信息
-                // e.detail.iv     //加密算法的初始向量  时要用到
+                                that.$store.commit(
+                                    "accountFun",
+                                    res.userInfo.nickName
+                                );
+                                that.$store.commit(
+                                    "avatarFun",
+                                    res.userInfo.avatarUrl
+                                );
 
-                let data = {
-                    encryptedData: e.detail.encryptedData,
-                    iv: e.detail.iv,
-                    openId: this.wx.openId,
-                };
-                authAppLogin(data)
-                    .then((res) => {
-                        console.log(res);
-                        if (res.status == 200) {
-                            // setStorage("account", res.data.appUser.nickname);
-                            // setStorage("avatar", res.data.appUser.avatar);
+                                that.$store.commit(
+                                    "openIdFun",
+                                    v.data.appUser.openId
+                                );
+                                that.$store.commit(
+                                    "tokenFun",
+                                    v.data.tokenEntity.accessToken
+                                );
+                                that.$store.commit(
+                                    "userIdFun",
+                                    v.data.tokenEntity.userId
+                                );
 
-                            setStorage("openId", res.data.appUser.openId);
-                            setStorage(
-                                "token",
-                                res.data.tokenEntity.accessToken
-                            );
-                            setStorage("userId", res.data.tokenEntity.userId);
+                                uni.reLaunch({
+                                    url: "/pages/home/home",
+                                });
 
-                            // that.$store.commit(
-                            //     "accountFun",
-                            //     res.data.appUser.nickname
-                            // );
-                            // that.$store.commit(
-                            //     "avatarFun",
-                            //     res.data.appUser.avatar
-                            // );
-                            that.$store.commit(
-                                "openIdFun",
-                                res.data.appUser.openId
-                            );
-                            that.$store.commit(
-                                "tokenFun",
-                                res.data.tokenEntity.accessToken
-                            );
-                            that.$store.commit(
-                                "userIdFun",
-                                res.data.tokenEntity.userId
-                            );
-
-                            uni.reLaunch({
-                                url: "/pages/home/home",
-                            });
-
-                            this.close();
-                        }
-                    })
-                    .catch((err) => {});
-            }
+                                that.close();
+                            }
+                        })
+                        .catch((err) => {});
+                },
+                fail: (err) => {
+                    console.log("拒绝授权", err);
+                    that.close();
+                },
+            });
         },
         close() {
             this.$store.commit("loginShowFun", false);

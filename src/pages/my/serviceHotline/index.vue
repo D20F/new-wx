@@ -332,24 +332,22 @@ export default {
     .content {
         width: 100%;
         height: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
         text:nth-child(1) {
             width: 100%;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
             text-align: left;
-            margin-bottom: 15upx;
             color: #333333;
             font-size: 32upx;
             font-weight: 600;
         }
         text:nth-child(2) {
             width: 100%;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
+            // white-space: nowrap;
+            // text-overflow: ellipsis;
+            // overflow: hidden;
             text-align: left;
-            margin-bottom: 15upx;
             color: #818181;
             font-size: 26upx;
         }

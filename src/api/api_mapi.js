@@ -342,4 +342,76 @@ export const getConfigure = (reqData) => {
     const data = reqData;
     return getData(url, data);
 }
+/*
+    经纬度获取地址
+    params:{}
+*/
+export const getAddress = (reqData) => {
+    const url = '/configure/app/getAddress';
+    const data = reqData;
+    return getData(url, data);
+}
+/*
+    获取旅游攻略评论
+    params:{}
+*/
+export const getTravelComment = (reqData) => {
+    const url = '/travelComment/app/list';
+    const data = reqData;
+    return getData(url, data);
+}
+/*
+    发布旅游攻略评论
+    params:{}
+*/
+export const addTravelComment = (reqData) => {
+    const url = '/travelComment/app/create';
+    const data = reqData;
+    return postData(url, data);
+}
+/*
+    获取旅游住宿评论
+    params:{}
+*/
+export const getHotelComment = (reqData) => {
+    const url = '/evaluation/app/hotelPage';
+    const data = reqData;
+    return getData(url, data);
+}
+/*
+    发布旅游住宿评论
+    params:{}
+*/
+export const addHotelComment = (reqData) => {
+    const url = '/evaluation/app/hotel';
+    const data = reqData;
+    return postData(url, data);
+}
+/*
+    获取景区门票评论
+    params:{}
+*/
+export const getTicketComment = (reqData) => {
+    const url = '/evaluation/app/ticketPage';
+    const data = reqData;
+    return getData(url, data);
+}
+/*
+    发布景区门票评论
+    params:{}
+*/
+export const addTicketComment = (reqData) => {
+    const url = '/evaluation/app/ticket';
+    const data = reqData;
+    return postData(url, data);
+}
+/*
+    获取我的消息
+    params:{}
+*/
+export const getMessage = (reqData) => {
+    const url = '/message/app/page';
+    const data = reqData;
+    return getData(url, data);
+}
 

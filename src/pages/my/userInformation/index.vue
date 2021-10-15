@@ -11,7 +11,7 @@
             </view>
             <view>
                 <text>我的位置</text>
-                <text>未定位</text>
+                <text>{{ address }}</text>
             </view>
             <view
                 @click="jumpRouter('/pages/my/userInformation/myAddress/index')"
@@ -33,17 +33,19 @@
 
 <script>
 import public_mixin from "@/mixins/public.js";
-
+import { getAddress } from "@/api/api_mapi";
 export default {
     name: "userInformation",
     data() {
         return {
-  
+            address: "",
         };
     },
     components: {},
     mixins: [public_mixin],
-    onLoad(option) {},
+    onLoad(option) {
+        this.getLocation();
+    },
     onShow() {},
     methods: {
         getLocation() {
@@ -51,9 +53,26 @@ export default {
             uni.getLocation({
                 type: "wgs84",
                 success: function (res) {
-                    console.log("当前位置：" + JSON.stringify(res));
-                    console.log("当前位置的经度：" + res.longitude);
-                    console.log("当前位置的纬度：" + res.latitude);
+                    // console.log("当前位置：" + JSON.stringify(res));
+                    // console.log("当前位置的经度：" + res.longitude);
+                    // console.log("当前位置的纬度：" + res.latitude);
+                    getAddress({
+                        longitude: res.longitude,
+                        latitude: res.latitude,
+                    })
+                        .then((res) => {
+                            // console.log(res);
+                            if (res.status == 200) {
+                                that.address = res.data;
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                },
+                fail: function (err) {
+                    that.address = "定位失败";
+                    // console.log(err);
                 },
             });
         },

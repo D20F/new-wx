@@ -51,7 +51,7 @@
 import calculate from "@/utils/mall/calculate";
 import cartItem from "@/component/business/mall/cartItem";
 import { setStorage } from "@/utils/storage.js";
-import { myCart, delCart } from "@/api/mall";
+import { myCart, delCart, editCart } from "@/api/mall";
 export default {
   components: { cartItem },
   data() {
@@ -69,7 +69,7 @@ export default {
     //   avatar:
     //     "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
     //   openId: "oPuSl4ulu5Nuo3fvuQpoes2Vnc5c",
-    //   token: "082b60157f034aa694600338e89d1a99",
+    //   token: "863a27457ca3475ab222e1137fdaf3c1",
     //   userId: "3595314797150208",
     // };
     // setStorage("account", d.nickname);
@@ -83,6 +83,12 @@ export default {
     // this.$store.commit("tokenFun", d.token);
     // this.$store.commit("userIdFun", d.userId);
     this.getMyCart();
+  },
+  onHide() {
+    this.editSave();
+  },
+  onUnload() {
+    this.editSave();
   },
   methods: {
     getMyCart() {
@@ -106,7 +112,7 @@ export default {
         this.total = calculate.add(
           this.total,
           calculate.multiply(
-            this.cartList[i].specification.number,
+            this.cartList[i].number,
             this.cartList[i].specification.price
           )
         );
@@ -116,7 +122,7 @@ export default {
         this.total = calculate.subtract(
           this.total,
           calculate.multiply(
-            this.cartList[i].specification.number,
+            this.cartList[i].number,
             this.cartList[i].specification.price
           )
         );
@@ -140,7 +146,7 @@ export default {
           this.total = calculate.add(
             this.total,
             calculate.multiply(
-              this.cartList[i].specification.number,
+              this.cartList[i].number,
               this.cartList[i].specification.price
             )
           );
@@ -148,7 +154,7 @@ export default {
       }
     },
     countChange(e, type, i) {
-      this.$set(this.cartList[i].specification, "number", e);
+      this.$set(this.cartList[i], "number", e);
       if (this.cartList[i].checked) {
         if (type > 0) {
           this.total = calculate.add(
@@ -181,9 +187,13 @@ export default {
             ids.push(item.id);
           }
         });
+      this.cartList = list;
       delCart(ids).then((res) => {
         this.cartList = list;
       });
+    },
+    editSave() {
+      editCart(this.cartList)
     },
   },
 };

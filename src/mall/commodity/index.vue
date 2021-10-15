@@ -14,14 +14,14 @@
       </view>
     </view>
     <view class="card-list-wrap">
-      <order-list :datasource="orderCardList"></order-list>
+      <order-list :datasource="orderCardList" :type="listType"></order-list>
     </view>
   </view>
 </template>
 
 <script>
 import orderList from "@/component/business/mall/cardListView";
-import { getOrders } from "@/api/mall";
+import { getOrders, getRefund } from "@/api/mall";
 import { setStorage } from "@/utils/storage.js";
 export default {
   data() {
@@ -69,6 +69,7 @@ export default {
       orderCardList: [],
       currPage: 1,
       totalPage: 1,
+      listType: "order",
     };
   },
   components: {
@@ -80,7 +81,7 @@ export default {
     //   avatar:
     //     "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
     //   openId: "oPuSl4ulu5Nuo3fvuQpoes2Vnc5c",
-    //   token: "082b60157f034aa694600338e89d1a99",
+    //   token: "863a27457ca3475ab222e1137fdaf3c1",
     //   userId: "3595314797150208",
     // };
     // setStorage("account", d.nickname);
@@ -107,12 +108,27 @@ export default {
       this.current = v;
       this.currPage = 1;
       this.orderCardList = [];
-      this.getOrders();
+      if (v == 4) {
+        this.listType = "refund";
+        this.getRefund();
+      } else {
+        this.listType = "order";
+        this.getOrders();
+      }
     },
     getOrders() {
       getOrders({
         current: this.currPage,
         status: this.statusEnum[this.current].id,
+      }).then((res) => {
+        this.totalPage = res.data.pages;
+        let list = res.data.records || [];
+        this.orderCardList.push(...list);
+      });
+    },
+    getRefund() {
+      getRefund({
+        current: this.currPage,
       }).then((res) => {
         this.totalPage = res.data.pages;
         let list = res.data.records || [];

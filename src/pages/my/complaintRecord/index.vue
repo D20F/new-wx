@@ -2,7 +2,7 @@
     <view class="view">
         <switchBtn :title="['待处理', '已完成']" @confirm="confirm" />
 
-        <bottomLoading v-if="current == 0" @changeRefresh="getPending">
+        <view v-if="current == 0" class="list">
             <view class="item" v-for="(item, index) in pending" :key="index">
                 <text class="time">{{ item.time }}</text>
                 <view class="content">
@@ -16,8 +16,8 @@
                     </view>
                 </view>
             </view>
-        </bottomLoading>
-        <bottomLoading v-else-if="current == 1" @changeRefresh="getComplete">
+        </view>
+        <view v-else-if="current == 1" class="list">
             <view class="item" v-for="(item, index) in complete" :key="index">
                 <text class="time">{{ item.time }}</text>
                 <view class="content">
@@ -34,7 +34,7 @@
                     </text>
                 </view>
             </view>
-        </bottomLoading>
+        </view>
     </view>
 </template>
 
@@ -42,7 +42,6 @@
 import public_mixin from "@/mixins/public.js";
 import switchBtn from "@/component/switchBtn/index.vue";
 import { getComplaintPage } from "@/api/api_mapi";
-import bottomLoading from "@/component/bottomLoading/index.vue";
 
 export default {
     name: "complaintRecord",
@@ -60,11 +59,13 @@ export default {
     },
     components: {
         switchBtn,
-        bottomLoading,
     },
     mixins: [public_mixin],
     onLoad(option) {
         this.getPending();
+    },
+    onReachBottom() {
+        this.current == 0 ? this.getPending() : this.getComplete();
     },
     onShow() {},
     methods: {
@@ -200,5 +201,11 @@ export default {
             margin-right: 20upx;
         }
     }
+}
+.list {
+    width: 94%;
+    position: relative;
+    margin: 120upx auto 0 auto;
+    overflow-y: auto;
 }
 </style>

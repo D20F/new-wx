@@ -318,9 +318,9 @@ export default {
         text {
             width: 100%;
             text-align: left;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
+            // white-space: nowrap;
         }
         text:nth-child(1) {
             color: #333333;

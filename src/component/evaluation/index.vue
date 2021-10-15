@@ -10,45 +10,23 @@
                     <text>{{ item.appUser.nickname }}</text>
                     <text>{{ item.createTime }}</text>
                 </view>
-                <view v-if="reply" @click="sendShowFun(item)">
-                    <image
-                        src="http://res.yitonginfo.com/xzwj/component/commentArea/reply.png"
-                        mode=""
-                    />
-                </view>
             </view>
             <view class="content">
                 <text>{{ item.content }}</text>
             </view>
-            <view v-if="item.replyList.length !== 0" class="reply">
-                <text v-for="(i, index) in item.replyList" :key="index">
-                    {{ i.appUser.nickname }}: <text>{{ i.content }}</text>
+            <view v-if="item.replyContent" class="reply">
+                <text>
+                    商家: <text>{{ item.replyContent }}</text>
                 </text>
             </view>
         </view>
-        <u-popup
-            v-if="cache.sendShow"
-            v-model="cache.sendShow"
-            mode="bottom"
-            :customStyle="{ top: '0px' }"
-            :closeable="false"
-            border-radius="14"
-            width="750"
-            height="140"
-        >
-            <sendComment :focus="true" @send="send" />
-        </u-popup>
+        <view class="point"></view>
     </view>
 </template>
 <script>
-import sendComment from "../sendComment/index.vue";
 export default {
-    name: "commentArea",
+    name: "evaluation",
     props: {
-        reply: {
-            type: Boolean,
-            default: false,
-        },
         list: {
             type: Array,
             default: () => {
@@ -56,45 +34,15 @@ export default {
             },
         },
     },
-    components: {
-        sendComment,
-    },
+    components: {},
     created() {},
     data() {
         return {
-            val: "",
-            cache: {
-                sendShow: false,
-                replyId: "",
-                guidesId: "",
-            },
         };
     },
-    methods: {
-        sendShowFun(data) {
-            this.cache.sendShow = true;
-            this.cache.guidesId = data.guidesId;
-            this.cache.replyId = data.id;
-        },
-        send(data) {
-            // console.log(data);
-            this.$emit("replyComment", {
-                val: data,
-                replyId: this.cache.replyId,
-                guidesId: this.cache.guidesId,
-            });
-            this.val = "";
-            this.cache.sendShow = false;
-            this.cache.guidesId = "";
-            this.cache.replyId = "";
-        },
-    },
-    mounted() {
-    
-    },
-    beforeDestroy() {
-    
-    },
+    methods: {},
+    mounted() {},
+    beforeDestroy() {},
 };
 </script>
 <style lang='scss' scoped>
@@ -180,5 +128,10 @@ export default {
         }
     }
 }
-
+.point {
+    width: 50%;
+    height: 2upx;
+    position: absolute;
+    bottom: 0;
+}
 </style>

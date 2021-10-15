@@ -20,7 +20,7 @@
 
         <view class="btn" @click="playPhone(list.tel)">
             <u-icon size="35" color="#ffffff" name="phone"></u-icon>
-            <text> 电话咨询</text>
+            <text> {{ list.tel }}</text>
         </view>
     </view>
 </template>

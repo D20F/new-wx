@@ -16,7 +16,7 @@
           <view class="name">{{ dataSource.name }}</view>
           <view class="phone">{{ dataSource.mobile }}</view>
         </view>
-        <view class="bottom">{{ dataSource.area }}{{ dataSource.address }}</view>
+        <view class="bottom">{{ dataSource.area || '' }}{{ dataSource.address }}</view>
       </view>
     </view>
   </view>

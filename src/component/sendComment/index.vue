@@ -36,6 +36,7 @@ export default {
     methods: {
         send() {
             this.$emit("send", this.val);
+            this.val = "";
         },
     },
     mounted() {

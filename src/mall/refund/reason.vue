@@ -72,11 +72,11 @@
     </view>
     <view class="bottom-fixed">
       <view class="btns">
-        <u-button
+        <view
           style="width: 100%"
           class="btn btn-red"
           @click="buy"
-          >提交</u-button
+          >提交</view
         >
       </view>
     </view>

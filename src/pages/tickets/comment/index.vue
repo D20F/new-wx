@@ -4,21 +4,21 @@
         <view class="title">
             <u-input
                 class="textarea"
-                v-model="form.title"
+                v-model="form.content"
                 placeholder="请描述你的评价内容"
                 :customStyle="{
                     background: '#ffffff',
                     padding: '10px',
                 }"
                 type="textarea"
-                maxlength="300"
+                maxlength="100"
                 height="50"
             >
             </u-input>
             <view class="connect">
                 <view></view>
                 <view class="count">
-                    <text> {{ form.title.length }}/300 </text>
+                    <text> {{ form.content.length }}/100 </text>
                 </view>
             </view>
         </view>
@@ -32,25 +32,48 @@
 
 <script>
 import public_mixin from "@/mixins/public.js";
+import { addTicketComment } from "@/api/api_mapi";
 
 export default {
     name: "",
     data() {
         return {
             form: {
-                title: "",
+                content: "",
+                id: "",
+                reserveId: "",
             },
         };
     },
     components: {},
     mixins: [public_mixin],
-   onLoad(option) {
-        console.log(JSON.parse(option.data));
+    onLoad(option) {
+        let data = JSON.parse(option.data);
+        this.form.id = data.id;
+        this.form.reserveId = data.reserveId;
     },
     onShow() {},
     methods: {
         submit() {
-            return console.log(this.form);
+            addTicketComment({
+                content: this.form.content,
+                orderId: this.form.id,
+                foreignId: this.form.reserveId,
+            })
+                .then((res) => {
+                    if (res.status == 200) {
+                        uni.showToast({
+                            icon: "none",
+                            title: "发送成功",
+                        });
+                        setTimeout(() => {
+                            this.back(1);
+                        }, 1500);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
     },
     computed: {},

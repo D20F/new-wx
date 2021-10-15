@@ -1,13 +1,5 @@
 <template>
     <view class="view">
-        <!-- <u-icon
-            class="back"
-            name="arrow-left"
-            color="#FFFFFF"
-            size="35"
-            @click="back(1)"
-        ></u-icon> -->
-
         <u-swiper :list="swiper_list" height="375"></u-swiper>
         <view class="introduce">
             <view class="header">
@@ -41,7 +33,7 @@
         <commentArea
             :list="comment"
             :reply="true"
-            @changeRefresh="changeRefresh"
+            @replyComment="replyComment"
         />
 
         <view class="btn">
@@ -62,7 +54,11 @@ import public_mixin from "@/mixins/public.js";
 import commentArea from "@/component/commentArea/index.vue";
 import sendComment from "@/component/sendComment/index.vue";
 
-import { getTravelGuidesDetails } from "@/api/api_mapi";
+import {
+    getTravelGuidesDetails,
+    getTravelComment,
+    addTravelComment,
+} from "@/api/api_mapi";
 
 export default {
     name: "",
@@ -79,6 +75,11 @@ export default {
             swiper_list: [],
             contentList: [],
             comment: [],
+            page: {
+                total: 0,
+                page: 1,
+                pageSize: 10,
+            },
         };
     },
     components: {
@@ -89,112 +90,30 @@ export default {
     onLoad(option) {
         let id = JSON.parse(option.data);
         this.getTravelGuidesDetails(id);
-
-        // 暂时使用假数据
-        if (id == 3611302537592832) {
-            let data = [
-                {
-                    name: "D20F",
-                    time: "2021-09-29",
-                    content: "淳朴、古典、优雅、美食、人文、市井，它都有",
-                    avatarUrl:
-                        "https://thirdwx.qlogo.cn/mmopen/vi_32/GO3MiaticreZdkicZge9LCVtG8XH2EgqXNP3h7ia1RQlZe56svkq2Bj4JTMVXajF7N3ACuLL7ic7dOpibQtUoxRF9Y9g/132",
-                    id: 1,
-                },
-                {
-                    name: "开到茶蘼",
-                    time: "2021-09-29",
-                    content: "最喜欢的巴扎，小时候无论买不买东西都会逛一圈",
-                    avatarUrl:
-                        "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJKzIcE9GD5BcIXRAjoK3XiaZ3UT8L41kkAOPOYLpCNVn9Eb7vYelJV1YxqXqvibnI3fPTD3uVBsjgw/132",
-                    id: 2,
-                },
-            ];
-            this.comment = data;
-        } else if (id == 3611278225965056) {
-            let data = [
-                {
-                    name: "志勇",
-                    time: "2021-09-29",
-                    content: "此生必去，人间仙境也不过如此",
-                    avatarUrl:
-                        "https://thirdwx.qlogo.cn/mmopen/vi_32/PZjSdZonUbth4snWRPwxVkiaADuXDxTGt8ItXRnstwZOoCpqKCOicdRf8M9ofs2EFZcNnfgD6gWU3TIrMncHwrJA/132",
-                    id: 1,
-                },
-                {
-                    name: "碧蛾",
-                    time: "2021-09-29",
-                    content: "这个雪山是一年四季都存在的嘛",
-                    avatarUrl:
-                        "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLaaic4OoAlPRibhib4GFWAP8MTvEG5pARZVY7BibNQA4zA8wCl4icrvTkaviam9vofMzHEH5cWQ1SZtYzw/132",
-                    id: 2,
-                },
-                {
-                    name: "曹明",
-                    time: "2021-09-29",
-                    content: "去这里要办边防证吗？",
-                    avatarUrl:
-                        "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKw2BSAUB4gFU07IWMUVPQHAHoEzRibulzKvZZMxBVy9DKJ7slJIkOOIH0k9ibkxmrVhBO4a6SnBOVQ/132",
-                    id: 3,
-                },
-            ];
-            this.comment = data;
-        } else if (id == 3611154930925568) {
-            let data = [
-                {
-                    name: "笑看风云",
-                    time: "2021-09-29",
-                    content: "喀什老城一定要来打卡，绝对比丽江有意思的多",
-                    avatarUrl:
-                        "https://thirdwx.qlogo.cn/mmopen/vi_32/VUQn5YokkVia6khPUSnCiawbWRoqM0ojjxRd137dQ1K8QxFiaKMtFaJaR6SGzw2lYDkM0P3yibWHDbfrhNLNRt8GgA/132",
-                    id: 1,
-                },
-                {
-                    name: "阿元",
-                    time: "2021-09-29",
-                    content:
-                        "去过的当地人最多的古城，非常有民族特色，各种手工产品超漂亮",
-                    avatarUrl:
-                        "https://thirdwx.qlogo.cn/mmopen/vi_32/MBsQ2DtUiaPCkaOGfqDH0GJ7VibYwr8IgWUoUTUW2zelqmFwvxbhaMicI1iaB7cMUnKuhPFLTOWicXibTUAicOtYDGTSw/132",
-                    id: 2,
-                },
-            ];
-            this.comment = data;
-        }
+        this.getTravelComment(id);
     },
     onShow() {},
+    onReachBottom() {
+        // 下拉加载评论
+        this.getTravelComment(this.list.id);
+    },
     methods: {
-        changeRefresh() {
-            // let data = {
-            //     name: "昵称",
-            //     time: "2021-02-11",
-            //     content:
-            //         "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-            //     avatarUrl: "http://res.yitonginfo.com/xzwj/my/avatar.png",
-            //     id: 1,
-            //     reply: [
-            //         {
-            //             name: "昵称",
-            //             time: "2021-02-11",
-            //             content:
-            //                 "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-            //             avatarUrl:
-            //                 "http://res.yitonginfo.com/xzwj/my/avatar.png",
-            //         },
-            //         {
-            //             name: "昵称",
-            //             time: "2021-02-11",
-            //             content:
-            //                 "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-            //             avatarUrl:
-            //                 "http://res.yitonginfo.com/xzwj/my/avatar.png",
-            //         },
-            //     ],
-            // };
-            // if (this.comment.length < 3) {
-            //     this.comment = this.comment.concat(data);
-            // }
-            // console.log(this.comment);
+        getTravelComment(id) {
+            getTravelComment({
+                current: this.page.page,
+                size: this.page.pageSize,
+                guidesId: id,
+            })
+                .then((res) => {
+                    // console.log(res);
+                    if (res.status == 200) {
+                        this.comment = [...this.comment, ...res.data.records];
+                        this.page.page = this.page.page + 1;
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         getTravelGuidesDetails(id) {
             getTravelGuidesDetails(id)
@@ -229,8 +148,51 @@ export default {
                     console.log(err);
                 });
         },
+        replyComment(data) {
+            addTravelComment({
+                content: data.val,
+                guidesId: data.guidesId,
+                replyId: data.replyId,
+            })
+                .then((res) => {
+                    if (res.status == 200) {
+                        uni.showToast({
+                            icon: "none",
+                            title: "回复成功",
+                        });
+                        setTimeout(() => {
+                            this.page.page = 1;
+                            this.comment = [];
+                            this.getTravelComment(this.list.id);
+                        }, 800);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
         send(data) {
-            console.log(data);
+            addTravelComment({
+                content: data,
+                guidesId: this.list.id,
+                replyId: "",
+            })
+                .then((res) => {
+                    if (res.status == 200) {
+                        uni.showToast({
+                            icon: "none",
+                            title: "发送成功",
+                        });
+                        setTimeout(() => {
+                            this.page.page = 1;
+                            this.comment = [];
+                            this.getTravelComment(this.list.id);
+                        }, 800);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
     },
     computed: {},

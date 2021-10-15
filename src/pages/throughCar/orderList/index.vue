@@ -2,13 +2,18 @@
     <view class="view">
         <switchBtn :title="['进行中', '已完成']" @confirm="confirm" />
 
-        <bottomLoading v-if="current == 0" @changeRefresh="getPending">
-            <view class="itemOff" v-for="(item, index) in pending" :key="index">
-                <view class="left" @click="jumpDetails(item)">
+        <view v-if="current == 0" class="list">
+            <view
+                @click.stop="jumpDetails(item)"
+                class="itemOff"
+                v-for="(item, index) in pending"
+                :key="index"
+            >
+                <view class="left">
                     <image :src="item.reserve.imageUrl" mode="" />
                 </view>
                 <view class="right">
-                    <view class="title" @click="jumpDetails(item)">
+                    <view class="title">
                         <text>{{ item.reserve.title }}</text>
                         <text v-if="item.status == -1">已取消</text>
                         <text v-else-if="item.status == 1" class="red"
@@ -18,23 +23,26 @@
                             >待使用</text
                         >
                     </view>
-                    <view class="time" @click="jumpDetails(item)">
+                    <view class="time">
                         <text>预约时间: {{ item.createTime }}</text>
                     </view>
                     <view class="btn">
                         <text class="price">￥ {{ item.payAmount }}</text>
-                        <view v-if="item.status == 1" @click="pay(item)">
+                        <view v-if="item.status == 1" @click.stop="pay(item)">
                             <text>去支付</text>
                         </view>
-                        <view v-else-if="item.status == 2">
+                        <view
+                            @click.stop="openCode(item.writeOffNo)"
+                            v-else-if="item.status == 2"
+                        >
                             <text>去使用</text>
                         </view>
                     </view>
                 </view>
             </view>
-        </bottomLoading>
+        </view>
 
-        <bottomLoading v-else-if="current == 1" @changeRefresh="getComplete">
+        <view v-else-if="current == 1" class="list">
             <view
                 @click="jumpDetails(item)"
                 class="itemOn"
@@ -57,7 +65,7 @@
                     </view>
                 </view>
             </view>
-        </bottomLoading>
+        </view>
     </view>
 </template>
 
@@ -65,7 +73,6 @@
 import public_mixin from "@/mixins/public.js";
 import switchBtn from "@/component/switchBtn/index.vue";
 import { getThrough, wxReservePay } from "@/api/api_mapi";
-import bottomLoading from "@/component/bottomLoading/index.vue";
 export default {
     name: "",
     data() {
@@ -81,13 +88,14 @@ export default {
         };
     },
     components: {
-        bottomLoading,
         switchBtn,
     },
     mixins: [public_mixin],
     onLoad(option) {},
     onShow() {
         this.getPending();
+    },   onReachBottom() {
+        this.current == 0 ? this.getPending() : this.getComplete();
     },
     methods: {
         pay(item) {
@@ -185,6 +193,12 @@ export default {
             delete data.reserve.content;
             this.jumpRouter("/pages/throughCar/orderDetails/index", data);
         },
+        openCode(v) {
+            uni.showModal({
+                title: "验证码",
+                content: v,
+            });
+        },
     },
     computed: {},
 };
@@ -259,7 +273,7 @@ export default {
             view {
                 width: 144upx;
                 height: 50upx;
-                border: 1upx solid #2d84ed;
+                border: 2upx solid #2d84ed;
                 border-radius: 24upx;
 
                 text {

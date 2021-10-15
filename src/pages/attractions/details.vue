@@ -1,13 +1,5 @@
 <template>
     <view class="view">
-        <!-- <u-icon
-            class="back"
-            name="arrow-left"
-            color="#FFFFFF"
-            size="35"
-            @click="back(1)"
-        ></u-icon> -->
-
         <u-swiper :list="swiper_list" height="375"></u-swiper>
         <view class="introduce">
             <view class="header">
@@ -103,6 +95,9 @@ export default {
             uni.openLocation({
                 longitude: ~~this.list.longitude,
                 latitude: ~~this.list.latitude,
+                name:this.list.title,
+                address:this.list.address,
+                scale: 7,
             });
         },
     },

@@ -1,13 +1,5 @@
 <template>
     <view class="view">
-        <!-- <u-icon
-            class="back"
-            name="arrow-left"
-            color="#FFFFFF"
-            size="35"
-            @click="back(1)"
-        ></u-icon> -->
-
         <u-swiper :list="swiper_list" height="375"></u-swiper>
         <view class="introduce">
             <view class="header">
@@ -33,7 +25,7 @@
             </view>
         </view>
 
-        <!-- <commentArea :list="comment" @changeRefresh="changeRefresh" /> -->
+        <evaluation :list="comment" />
 
         <view class="btn">
             <view @click="openMap">
@@ -56,8 +48,8 @@
 
 <script>
 import public_mixin from "@/mixins/public.js";
-import commentArea from "@/component/commentArea/index.vue";
-import { getHotelApp } from "@/api/api_mapi";
+import evaluation from "@/component/evaluation/index.vue";
+import { getHotelApp, getHotelComment } from "@/api/api_mapi";
 
 export default {
     name: "reserveHotel",
@@ -78,50 +70,32 @@ export default {
                 latitude: "",
             },
             swiper_list: [],
-            comment: [
-                {
-                    name: "昵称",
-                    time: "2021-02-11",
-                    content:
-                        "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-                    avatarUrl: "http://res.yitonginfo.com/xzwj/my/avatar.png",
-                    id: 1,
-                    reply: [
-                        {
-                            name: "昵称",
-                            time: "2021-02-11",
-                            content:
-                                "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-                            avatarUrl:
-                                "http://res.yitonginfo.com/xzwj/my/avatar.png",
-                        },
-                        {
-                            name: "昵称",
-                            time: "2021-02-11",
-                            content:
-                                "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-                            avatarUrl:
-                                "http://res.yitonginfo.com/xzwj/my/avatar.png",
-                        },
-                    ],
-                },
-            ],
+            comment: [],
+            page: {
+                total: 0,
+                page: 1,
+                pageSize: 10,
+            },
         };
     },
     components: {
-        commentArea,
+        evaluation,
     },
     mixins: [public_mixin],
     onLoad(option) {
         let data = JSON.parse(option.data);
         this.getHotelApp(data.id);
+        this.getHotelComment(data.id);
     },
     onShow() {},
+    onReachBottom() {
+        this.getHotelComment(this.list.id);
+    },
     methods: {
         getHotelApp(id) {
             getHotelApp(id)
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         this.list = {
                             image: res.data.coverUrl,
@@ -151,41 +125,30 @@ export default {
                     console.log(err);
                 });
         },
-        changeRefresh() {
-            let data = {
-                name: "昵称",
-                time: "2021-02-11",
-                content:
-                    "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-                avatarUrl: "http://res.yitonginfo.com/xzwj/my/avatar.png",
-                id: 1,
-                reply: [
-                    {
-                        name: "昵称",
-                        time: "2021-02-11",
-                        content:
-                            "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-                        avatarUrl:
-                            "http://res.yitonginfo.com/xzwj/my/avatar.png",
-                    },
-                    {
-                        name: "昵称",
-                        time: "2021-02-11",
-                        content:
-                            "评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论",
-                        avatarUrl:
-                            "http://res.yitonginfo.com/xzwj/my/avatar.png",
-                    },
-                ],
-            };
-            if (this.comment.length < 3) {
-                this.comment = this.comment.concat(data);
-            }
+        getHotelComment(id) {
+            getHotelComment({
+                current: this.page.page,
+                size: this.page.pageSize,
+                guidesId: id,
+            })
+                .then((res) => {
+                    console.log(res);
+                    if (res.status == 200) {
+                        this.comment = [...this.comment, ...res.data.records];
+                        this.page.page = this.page.page + 1;
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         openMap() {
             uni.openLocation({
                 longitude: ~~this.list.longitude,
                 latitude: ~~this.list.latitude,
+                name: this.list.title,
+                address: this.list.address,
+                scale: 7,
             });
         },
         playPhone(data) {

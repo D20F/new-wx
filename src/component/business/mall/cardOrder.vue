@@ -1,7 +1,19 @@
 <template>
   <view class="mall-card">
     <view class="card-container">
-      <view class="order-label">
+      <view class="order-label" v-if="type == 'refund'">
+        <view>退费编号：{{ cardInfo.id }}</view>
+        <view v-if="cardInfo.status == 1" class="mall-status-orange">
+          待审核
+        </view>
+        <view v-else-if="cardInfo.status == 2" class="mall-status-green">
+          已完成
+        </view>
+        <view v-else-if="cardInfo.status == 3" class="mall-status-red">
+          已拒绝
+        </view>
+      </view>
+      <view class="order-label" v-else>
         <view>订单编号：{{ cardInfo.id }}</view>
         <view v-if="cardInfo.status == 1" class="mall-status-red">
           待付款
@@ -43,25 +55,40 @@
             </view>
           </view>
         </scroll-view>
-        <view class="view-more">
+        <view class="view-more" @click="jumpTo()">
           <u-icon class="arrow-up" name="arrow-right" size="30" color="#ccc" />
         </view>
       </view>
       <view class="divier"></view>
       <view class="order-controller">
         <view>共{{ cardInfo.ordersProductList.length }}件商品</view>
-        <view class="btn" v-if="cardInfo.status == 0">去支付</view>
-        <view class="btn" v-else-if="cardInfo.status == 1">提醒发货</view>
-        <view class="btn" v-else-if="cardInfo.status == 2">确认收货</view>
-        <view class="btn" v-else-if="cardInfo.status == 3">申请售后</view>
+        <template v-if="type != 'refund'">
+          <view class="btn" v-if="cardInfo.status == 1" @click="jumpTo()"
+            >去支付</view
+          >
+          <view class="btn" v-else-if="cardInfo.status == 2" @click="remind"
+            >提醒发货</view
+          >
+          <view class="btn" v-else-if="cardInfo.status == 3" @click="jumpTo()"
+            >确认收货</view
+          >
+          <view class="btn" v-else-if="cardInfo.status == 4" @click="jumpTo()"
+            >申请售后</view
+          >
+        </template>
       </view>
     </view>
   </view>
 </template>
 
 <script>
+import { remindOrder } from "@/api/mall";
 export default {
   props: {
+    type: {
+      type: String,
+      default: "order",
+    },
     datasource: {
       type: Object,
       default: () => {
@@ -100,13 +127,38 @@ export default {
   },
   methods: {
     scrolltolower() {
-      console.log(11111);
+      console.log("scrolltolower");
+    },
+    jumpTo() {
+      if (this.type == "refund") {
+        this.$u.route({
+          url: "mall/order/refund",
+          params: {
+            orderId: this.cardInfo.id,
+            status: this.cardInfo.status,
+          },
+        });
+      } else {
+        this.$u.route({
+          url: "mall/order/index",
+          params: {
+            orderId: this.cardInfo.id,
+            status: this.cardInfo.status,
+          },
+        });
+      }
+    },
+    remind() {
+      remindOrder(this.cardInfo.id).then((res) => {
+        uni.showToast({
+          title: "提醒成功",
+        });
+      });
     },
   },
   watch: {
     datasource: {
       handler(val, oldval) {
-        // debugger
         this.cardInfo = JSON.parse(JSON.stringify(val));
       },
       deep: true,
@@ -168,15 +220,17 @@ export default {
     font-size: 26rpx;
     color: #818181;
     .btn {
-        height: 50rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #2D84ED;
-        border: 2rpx solid #2D84ED;
-        font-size: 28rpx;
-        border-radius: 24rpx;
-        padding: 0 14rpx;
+      width: 150rpx;
+      margin: 0;
+      height: 50rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2d84ed;
+      border: 2rpx solid #2d84ed;
+      font-size: 28rpx;
+      border-radius: 24rpx;
+      padding: 0 14rpx;
     }
   }
 }

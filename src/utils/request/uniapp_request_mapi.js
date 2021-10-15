@@ -49,6 +49,21 @@ export const deleteData = (url, params) => {
         });
     })
 }
+export const putData = (url, params) => {
+    return new Promise((resolve, reject) => {
+        uni.request({
+            url: baseURL + url,
+            data: params,
+            header: {
+                tokenType: 2,
+            },
+            method: 'PUT',
+            timeout: 30000,
+            success: (res) => { resolve(res.data) },
+            fail: (err) => { reject(err) }
+        });
+    })
+}
 
 
 

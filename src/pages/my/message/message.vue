@@ -2,43 +2,29 @@
     <view class="view">
         <view class="list">
             <view
-                @click="jumpRouter('/pages/my/message/replyNotification/index',item)"
                 class="item"
-                v-for="(item, index) in reply"
+                v-for="(item, index) in list"
                 :key="index"
+                @click="jump(item)"
             >
                 <view class="left">
                     <image
+                        v-if="item.mode == 1"
                         src="http://res.yitonginfo.com/xzwj/my/message/reply.png"
                         alt=""
                     />
-                </view>
-                <view class="right">
-                    <view class="title">
-                        <text>回复通知</text>
-                        <text>{{ item.time }}</text>
-                    </view>
-                    <text class="content">{{ item.content }}</text>
-                </view>
-            </view>
-            <view
-                @click="
-                    jumpRouter('/pages/my/message/systemNotification/index',item)
-                "
-                class="item"
-                v-for="(item, index) in system"
-                :key="index"
-            >
-                <view class="left">
                     <image
+                        v-else
                         src="http://res.yitonginfo.com/xzwj/my/message/system.png"
                         alt=""
                     />
                 </view>
                 <view class="right">
                     <view class="title">
-                        <text>系统通知</text>
-                        <text>{{ item.time }}</text>
+                        <text>{{
+                            item.mode == 1 ? "系统通知" : "回复通知"
+                        }}</text>
+                        <text>{{ item.createTime }}</text>
                     </view>
                     <text class="content">{{ item.content }}</text>
                 </view>
@@ -49,39 +35,58 @@
 
 <script>
 import public_mixin from "@/mixins/public.js";
+import { getMessage } from "@/api/api_mapi";
 
 export default {
     name: "message",
     data() {
         return {
-            reply: [
-                // {
-                //     time: "2021-06-05 13:00",
-                //     content: "昵称...",
-                // },
-                // {
-                //     time: "2021-06-05 13:00",
-                //     content:
-                //         "昵称：这里是回复内容这里是回复内容这saaaaaaaaaaaa...",
-                // },
-            ],
-            system: [
-                // {
-                //     time: "2021-06-05 13:00",
-                //     content: "昵称：这里是回复内容这里是回复内容这...",
-                // },
-                {
-                    time: "2021-09-30 14:00",
-                    content: "注册成功",
-                },
-            ],
+            list: [],
+            page: {
+                total: 0,
+                page: 1,
+                pageSize: 10,
+            },
         };
     },
     components: {},
     mixins: [public_mixin],
-    onLoad(option) {},
+    onLoad(option) {
+        this.getMessage();
+    },
     onShow() {},
-    methods: {},
+    onReachBottom() {
+        this.getMessage();
+    },
+    methods: {
+        getMessage() {
+            let data = {
+                current: this.page.page,
+                size: this.page.pageSize,
+            };
+            getMessage(data)
+                .then((res) => {
+                    if (res.status == 200) {
+                        this.list = [...this.list, ...res.data.records];
+                        this.page.page = this.page.page + 1;
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        jump(item) {
+            item.mode == 1
+                ? this.jumpRouter(
+                      "/pages/my/message/systemNotification/index",
+                      item
+                  )
+                : this.jumpRouter(
+                      "/pages/my/message/replyNotification/index",
+                      item
+                  );
+        },
+    },
     computed: {},
 };
 </script>

@@ -1,7 +1,22 @@
 <template>
   <view class="card mall-card">
-    <view class="radio-icon" @click="check" v-if="type != 'order'">
-      <view class="round" :class="{ ed: projectData.checked }"></view>
+    <view class="radio-icon" v-if="type != 'order'">
+      <view class="str" v-if="projectData.status == 2">
+        <view>退</view>
+        <view>费</view>
+        <view>中</view>
+      </view>
+      <view class="str" v-else-if="projectData.status == 3">
+        <view>已</view>
+        <view>退</view>
+        <view>费</view>
+      </view>
+      <view
+        class="round"
+        @click="check"
+        :class="{ ed: projectData.checked }"
+        v-else
+      ></view>
     </view>
     <view class="right" :class="{ calc: type != 'order' }">
       <image class="cover" :src="projectData.product.cover" />
@@ -16,14 +31,14 @@
           <view class="num-input" v-if="type == 'cart'">
             <u-number-box
               :disabled-input="true"
-              v-model="projectData.specification.number"
+              v-model="projectData.number"
               :min="projectData.specification.minSale"
               :max="projectData.specification.stock"
               @minus="countChange($event, -1)"
               @plus="countChange($event, 1)"
             />
           </view>
-          <view class="total" v-else>×{{ projectData.specification.number }}</view>
+          <view class="total" v-else>×{{ projectData.number }}</view>
         </view>
       </view>
     </view>
@@ -75,6 +90,13 @@ export default {
 @import "@/common/mall.scss";
 .card {
   @include flex(space-between);
+  .radio-icon {
+    .str {
+      @include flex(center, center, column);
+      font-size: 24rpx;
+      color: #666;
+    }
+  }
   .right {
     @include flex(space-between);
     width: 100%;

@@ -319,8 +319,6 @@
                     "style": {
                         "navigationBarBackgroundColor": "#DB2D2D",
                         "navigationBarTitleText": "",
-                        "enablePullDownRefresh": true,
-                        "onReachBottomDistance": 50,
                         "navigationBarTextStyle": "white",
                         "app-plus": {
                             "titleNView": false
@@ -362,6 +360,17 @@
                 },
                 {
                     "path": "order/index",
+                    "style": {
+                        "navigationBarBackgroundColor": "#DB2D2D",
+                        "navigationBarTitleText": "我的订单",
+                        "navigationBarTextStyle": "white",
+                        "app-plus": {
+                            "titleNView": false
+                        }
+                    }
+                },
+                {
+                    "path": "order/refund",
                     "style": {
                         "navigationBarBackgroundColor": "#DB2D2D",
                         "navigationBarTitleText": "我的订单",

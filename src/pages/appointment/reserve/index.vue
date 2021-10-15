@@ -2,7 +2,6 @@
     <view class="view">
         <view class="header">
             <text class="title">{{ list.title }}</text>
-            <text class="content">{{ list.content }}</text>
             <view class="phone" @click="playPhone(list.phone)">
                 <u-icon name="phone" color="#2979ff" size="28"></u-icon>
                 <text>
@@ -143,10 +142,6 @@ export default {
         font-weight: 600;
         color: #333333;
         line-height: 70upx;
-    }
-    .content {
-        font-size: 30upx;
-        color: #333333;
         margin-bottom: 20upx;
     }
     .phone {

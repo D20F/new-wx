@@ -12,10 +12,13 @@
             <view class="mall-status-blue" v-else-if="orderStatus == 3">
               待收货
             </view>
-            <view class="mall-status-gray" v-else-if="orderStatus == 4">
+            <view class="mall-status-gray" v-else-if="orderStatus == 5">
               申请售后
             </view>
-            <view class="mall-status-orange" v-else-if="orderStatus == 5">
+            <view class="mall-status-orange" v-else-if="orderStatus == 6">
+              退款中
+            </view>
+            <!-- <view class="mall-status-orange" v-else-if="orderStatus == 5">
               请完善信息
             </view>
             <view class="mall-status-orange" v-else-if="orderStatus == 6">
@@ -26,39 +29,72 @@
             </view>
             <view class="mall-status-orange" v-else-if="orderStatus == 8">
               退款失败
-            </view>
+            </view> -->
           </view>
         </view>
         <cartItem
-          type="refund"
+          :type="cartItemType"
           :dataSource="item"
           :dataIndex="index"
           @check="itemCheck"
-          @countChange="countChange"
-          v-for="(item, index) in cartList"
+          v-for="(item, index) in order.ordersProductList"
           :key="index"
         />
       </view>
-      <view class="reason mall-card">
+      <view class="reason-1 mall-card" v-if="resultType == 0">
         <view class="title">选择退款类型</view>
-        <view class="item" @click="jump(1)">
+        <view class="item" @click="resultTypeSele(1)">
           <view class="text">
             <view class="h6">我要退款</view>
             <view class="p">没收到货，或与卖家协商不用退货只退款</view>
           </view>
-          <u-icon name="arrow-right" color="#8B8B8B" size="22"/>
+          <u-icon name="arrow-right" color="#8B8B8B" size="22" />
         </view>
-        <view class="item" @click="jump(2)">
+        <view class="item" @click="resultTypeSele(2)">
           <view class="text">
             <view class="h6">我要退货退款</view>
             <view class="p">已收到货，需要退还收到的货物</view>
           </view>
-          <u-icon name="arrow-right" color="#8B8B8B" size="22"/>
+          <u-icon name="arrow-right" color="#8B8B8B" size="22" />
         </view>
       </view>
+      <template v-else>
+        <view class="reason-2 mall-card">
+          <view class="title">退款信息</view>
+          <view class="row-item">
+            <view class="label">货物状态</view>
+            <view class="value" @click="receiveSele = true">
+              {{ receiveSeleVal ? receiveSeleVal.label : "请选择" }}
+              <u-icon
+                name="arrow-right"
+                color="#8B8B8B"
+                size="22"
+                style="padding-left: 10rpx"
+              />
+            </view>
+          </view>
+          <view class="row-item">
+            <view class="label">退款原因</view>
+            <view class="value" @click="reasonSele = true">
+              {{ reasonSeleVal ? reasonSeleVal.label : "请选择" }}
+              <u-icon
+                name="arrow-right"
+                color="#8B8B8B"
+                size="22"
+                style="padding-left: 10rpx"
+              />
+            </view>
+          </view>
+          <view class="row-item">
+            <view class="label">退款金额</view>
+            <view class="value red">¥ {{ total }}</view>
+          </view>
+        </view>
+        <addrSele :dataSource="goodsAddr" type="read" addrTitle="商家收货地址" />
+      </template>
     </view>
     <view class="bottom-fixed">
-      <view class="total">
+      <view class="total" v-if="resultType == 0">
         <view class="select" @click="allCheck">
           <view class="radio-icon">
             <view class="round" :class="{ ed: allChecked }"></view>
@@ -71,68 +107,114 @@
           {{ total }}
         </view>
       </view>
+      <view class="btns" v-else>
+        <view style="width: 100%" class="btn btn-red" @click="refund"
+          >提交</view
+        >
+      </view>
     </view>
+    <u-select
+      title="货物状态"
+      v-model="receiveSele"
+      :list="receiveList"
+      @confirm="receiveSeleOk"
+    />
+    <u-select
+      title="退款原因"
+      v-model="reasonSele"
+      :list="reasonSeleList"
+      @confirm="reasonSeleOk"
+    />
   </view>
 </template>
 <script>
 import calculate from "@/utils/mall/calculate";
 import cartItem from "@/component/business/mall/cartItem";
 import addrSele from "@/component/business/mall/addrSele";
+import { setStorage } from "@/utils/storage.js";
+import { orderInfo, refundOrder, getMallAddr } from "@/api/mall";
 export default {
   components: { cartItem, addrSele },
   data() {
     return {
-      orderStatus: 6,
+      cartItemType: "refund",
+      orderId: 0,
+      order: {},
+      orderStatus: 0,
+      cartList: [],
       isDel: false,
-      cartList: [
-        {
-          price: 35,
-          count: 1,
-          stock: 10,
-          sku: "白色",
-          title: "北国风光，千里冰封，万里雪飘",
-          image:
-            "http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg",
-        },
-        {
-          price: 135,
-          count: 3,
-          stock: 1000,
-          sku: "黑色无线充电",
-          title: "北国风光，千里冰封，万里雪飘",
-          image:
-            "http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg",
-        },
-        {
-          price: 3.3,
-          count: 1,
-          stock: 5,
-          sku: "白色",
-          title: "北国风光，千里冰封，万里雪飘",
-          image:
-            "http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg",
-        },
-      ],
       allChecked: false,
       checkMap: new Map(),
       total: 0,
-      addr: {
-        name: "收货人昵称",
-        phone: "12345678900",
-        content: "这里是收货地址这里是收货地址这里是收货地址这里是收货地址",
-      },
       remark: "",
+      goodsAddr: {},
+      resultType: 0,
+      receiveSele: false,
+      receiveSeleVal: null,
+      receiveList: [
+        {
+          value: 1,
+          label: "未收到货",
+        },
+        {
+          value: 2,
+          label: "已收到货",
+        },
+      ],
+      reasonSele: false,
+      reasonSeleVal: null,
+      reasonSeleList: [
+        {
+          value: 1,
+          label: "多拍/拍错/不想要",
+        },
+        {
+          value: 2,
+          label: "快递一直未送到",
+        },
+        {
+          value: 3,
+          label: "空包裹/少货",
+        },
+      ],
     };
   },
+  onLoad(options) {
+    // let d = {
+    //   nickname: "zlzl",
+    //   avatar:
+    //     "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
+    //   openId: "oPuSl4ulu5Nuo3fvuQpoes2Vnc5c",
+    //   token: "863a27457ca3475ab222e1137fdaf3c1",
+    //   userId: "3595314797150208",
+    // };
+    // setStorage("account", d.nickname);
+    // setStorage("avatar", d.avatar);
+    // setStorage("openId", d.openId);
+    // setStorage("token", d.token);
+    // setStorage("userId", d.userId);
+    // this.$store.commit("accountFun", d.nickname);
+    // this.$store.commit("avatarFun", d.avatar);
+    // this.$store.commit("openIdFun", d.openId);
+    // this.$store.commit("tokenFun", d.token);
+    // this.$store.commit("userIdFun", d.userId);
+    this.orderId = options.orderId;
+    this.orderStatus = options.status;
+    this.getOrders();
+    this.mallAddr();
+  },
   methods: {
-    toDel(flag) {
-      this.isDel = !!flag;
-      this.total = 0;
-      this.allChecked = false;
-      this.checkMap.clear();
-      for (let i = 0; i < this.cartList.length; i++) {
-        this.$set(this.cartList[i], "checked", false);
-      }
+    mallAddr() {
+      getMallAddr().then((res) => {
+        this.goodsAddr = res.data;
+      });
+    },
+    getOrders() {
+      orderInfo(this.orderId).then((res) => {
+        let d = res.data;
+        this.order = d;
+        this.cartList = d.ordersProductList;
+      });
     },
     itemCheck(checked, i) {
       if (checked) {
@@ -140,14 +222,20 @@ export default {
         if (this.checkMap.size == this.cartList.length) this.allChecked = true;
         this.total = calculate.add(
           this.total,
-          calculate.multiply(this.cartList[i].count, this.cartList[i].price)
+          calculate.multiply(
+            this.cartList[i].number,
+            this.cartList[i].specification.price
+          )
         );
       } else {
         this.allChecked = false;
         this.checkMap.delete(i);
         this.total = calculate.subtract(
           this.total,
-          calculate.multiply(this.cartList[i].count, this.cartList[i].price)
+          calculate.multiply(
+            this.cartList[i].number,
+            this.cartList[i].specification.price
+          )
         );
       }
       this.$set(this.cartList[i], "checked", checked);
@@ -168,45 +256,65 @@ export default {
           this.checkMap.set(i, this.cartList[i]);
           this.total = calculate.add(
             this.total,
-            calculate.multiply(this.cartList[i].count, this.cartList[i].price)
+            calculate.multiply(
+              this.cartList[i].number,
+              this.cartList[i].specification.price
+            )
           );
         }
       }
     },
-    countChange(e, type, i) {
-      this.$set(this.cartList[i], "count", e);
-      if (this.cartList[i].checked) {
-        if (type > 0) {
-          this.total = calculate.add(this.total, this.cartList[i].price);
-        } else {
-          this.total = calculate.subtract(this.total, this.cartList[i].price);
-        }
-      }
-    },
-    buy() {
-      this.$store.commit("setBuys", {
-        goods: this.checkMap.values(),
-        price: this.total,
-      });
-      this.$u.route({
-        url: "mall/buys/index",
-      });
-    },
-    del() {
-      this.cartList = this.cartList.filter((item) => item.checked != true);
-    },
-    jump(type) {
+    resultTypeSele(type) {
       if (this.checkMap.size) {
-        this.$u.route({
-          url: "mall/refund/reason",
-          params: {
-            type: type,
-          },
-        });
+        this.cartItemType = "order";
+        this.resultType = type;
       } else {
         uni.showToast({
           title: "请选择商品",
           icon: "error",
+        });
+      }
+    },
+    receiveSeleOk(e) {
+      this.receiveSeleVal = e[0];
+    },
+    reasonSeleOk(e) {
+      this.reasonSeleVal = e[0];
+    },
+    refund() {
+      if (!this.receiveSeleVal) {
+        uni.showToast({
+          icon: "none",
+          title: "请选择货物状态",
+        });
+      } else if (!this.reasonSeleVal) {
+        uni.showToast({
+          icon: "none",
+          title: "请选择退款原因",
+        });
+      } else {
+        let ids = [];
+        for (let i = 0; i < this.cartList.length; i++) {
+          if (this.cartList[i].checked) {
+            ids.push(this.cartList[i].id);
+          }
+        }
+        refundOrder({
+          ordersId: this.orderId,
+          ordersProductId: ids,
+          resultType: this.resultType,
+          goods: this.receiveSeleVal.value,
+          reason: this.reasonSeleVal.label,
+        }).then((res) => {
+          uni.showToast({
+            title: "申请成功",
+          });
+          setTimeout(() => {
+            this.$u.route({
+              url: "mall/commodity/index",
+              type: "redirectTo",
+            });
+          }, 1500);
         });
       }
     },
@@ -246,7 +354,7 @@ export default {
         }
       }
     }
-    .reason {
+    .reason-1 {
       line-height: 46rpx;
       .title {
         font-size: 28rpx;
@@ -263,6 +371,33 @@ export default {
           font-size: 26rpx;
           color: #666;
         }
+      }
+    }
+    .reason-2 {
+      .title {
+        font-size: 28rpx;
+        color: #666;
+        line-height: 46rpx;
+        padding-bottom: 16rpx;
+      }
+      .row-item {
+        @include flex(space-between, center);
+        font-size: 30rpx;
+        line-height: 1.4;
+        .label {
+          width: 140rpx;
+        }
+        .value {
+          width: calc(100% - 140rpx);
+          color: #999;
+          text-align: right;
+          &.red {
+            color: $mall-red;
+          }
+        }
+      }
+      .row-item + .row-item {
+        margin-top: 10rpx;
       }
     }
   }

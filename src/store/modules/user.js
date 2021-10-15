@@ -11,7 +11,7 @@
 **/
 const PUBLIC = {
     state: () => ({
-        account: '昵称',
+        account: '未登录',
         nickName: '',
         avatar: 'http://res.yitonginfo.com/xzwj/my/avatar.png',
         openId: '',

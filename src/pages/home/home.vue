@@ -90,9 +90,10 @@
                     "
                 >
                     <image :src="item.image" />
-
-                    <text>{{ item.title }}</text>
-                    <text>{{ item.profile }}</text>
+                    <view>
+                        <text>{{ item.title }}</text>
+                        <text>{{ item.profile }}</text>
+                    </view>
                 </view>
             </view>
         </view>
@@ -165,6 +166,12 @@ export default {
                 .catch((e) => console.log(e));
             await getStorage("openId")
                 .then((r) => this.$store.commit("openIdFun", r))
+                .catch((e) => console.log(e));
+            await getStorage("account")
+                .then((r) => this.$store.commit("accountFun", r))
+                .catch((e) => console.log(e));
+            await getStorage("avatar")
+                .then((r) => this.$store.commit("avatarFun", r))
                 .catch((e) => console.log(e));
 
             this.getHomeRotationPage();
@@ -418,25 +425,27 @@ export default {
                 height: 100%;
                 border-radius: 20upx;
             }
-            text {
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-            }
-            text:nth-child(2) {
+            view {
+                width: 95%;
                 position: absolute;
-                bottom: 55upx;
-                left: 10upx;
-                color: #ffffff;
-                font-size: 30upx;
-                font-weight: 600;
-            }
-            text:nth-child(3) {
-                position: absolute;
-                left: 10upx;
-                bottom: 20upx;
-                color: #ffffff;
-                font-size: 24upx;
+                bottom: 5%;
+                left: 5%;
+                text {
+                    text-align: left;
+                    white-space: normal;
+                    // white-space: nowrap;
+                    // text-overflow: ellipsis;
+                    // overflow: hidden;
+                }
+                text:nth-child(1) {
+                    color: #ffffff;
+                    font-size: 30upx;
+                    font-weight: 600;
+                }
+                text:nth-child(2) {
+                    color: #ffffff;
+                    font-size: 24upx;
+                }
             }
         }
     }
@@ -461,14 +470,17 @@ export default {
         }
     }
     .scenery {
-        width: 95%;
-        margin-left: 5%;
+        width: 90%;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
         .item {
             position: relative;
-            display: inline-block;
-            width: 45%;
+            width: 330upx;
             height: 315upx;
-            margin: 0 5% 30upx 0;
+            margin-bottom: 15upx;
             image {
                 width: 100%;
                 height: 100%;

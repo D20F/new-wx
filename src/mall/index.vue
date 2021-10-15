@@ -122,7 +122,7 @@ export default {
     //   avatar:
     //     "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
     //   openId: "oPuSl4ulu5Nuo3fvuQpoes2Vnc5c",
-    //   token: "082b60157f034aa694600338e89d1a99",
+    //   token: "863a27457ca3475ab222e1137fdaf3c1",
     //   userId: "3595314797150208",
     // };
     // setStorage("account", d.nickname);
@@ -222,7 +222,7 @@ export default {
       width: 340rpx;
       height: 173rpx;
       border-radius: 10rpx;
-      margin-top: 10rpx;
+      margin-top: 20rpx;
       position: relative;
       overflow: hidden;
       img {

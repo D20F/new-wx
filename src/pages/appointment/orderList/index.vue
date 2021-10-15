@@ -2,11 +2,9 @@
     <view class="view">
         <switchBtn :title="['待处理', '已完成']" @confirm="confirm" />
 
-        <view v-show="current == 0" class="list">
+        <view v-if="current == 0" class="list">
             <view
-                @click="
-                    jumpDetails(item)
-                "
+                @click.stop="jumpDetails(item)"
                 class="itemOff"
                 v-for="(item, index) in pending"
                 :key="index"
@@ -19,16 +17,18 @@
                 <view class="type">
                     <text>{{ item.mode == 1 ? "散客" : "团体" }}</text>
                 </view>
-                <view class="btn">
+                <view
+                    @click.stop="openCode(item.writeOffNo)"
+                    class="btn"
+                    v-if="item.status == 2"
+                >
                     <text>去使用</text>
                 </view>
             </view>
         </view>
-        <view v-show="current == 1" class="list">
+        <view v-else-if="current == 1" class="list">
             <view
-                @click="
-                    jumpDetails(item)
-                "
+                @click.stop="jumpDetails(item)"
                 class="itemOn"
                 v-for="(item, index) in complete"
                 :key="index"
@@ -73,9 +73,11 @@ export default {
     onShow() {
         this.getPending();
     },
+    onReachBottom() {
+        this.current == 0 ? this.getPending() : this.getComplete();
+    },
     methods: {
         getPending() {
-            //  未加入 下拉加载 分页  后期添加
             let data = {
                 current: this.page.page,
                 size: this.page.pageSize,
@@ -85,7 +87,8 @@ export default {
                 .then((res) => {
                     // console.log(res);
                     if (res.status == 200) {
-                        this.pending = res.data.records;
+                        this.pending = [...this.pending, ...res.data.records];
+                        this.page.page = this.page.page + 1;
                     }
                 })
                 .catch((err) => {
@@ -93,7 +96,6 @@ export default {
                 });
         },
         getComplete() {
-            //  未加入 下拉加载 分页  后期添加
             let data = {
                 current: this.page.page,
                 size: this.page.pageSize,
@@ -103,7 +105,8 @@ export default {
                 .then((res) => {
                     // console.log(res);
                     if (res.status == 200) {
-                        this.complete = res.data.records;
+                        this.complete = [...this.complete, ...res.data.records];
+                        this.page.page = this.page.page + 1;
                     }
                 })
                 .catch((err) => {
@@ -112,21 +115,29 @@ export default {
         },
         confirm(data) {
             this.current = data;
-            if (data == 0) {
-                this.getPending();
-            } else {
-                this.getComplete();
-            }
             this.page = {
                 total: 0,
                 page: 1,
                 pageSize: 10,
             };
+            if (data == 0) {
+                this.pending = [];
+                this.getPending();
+            } else {
+                this.complete = [];
+                this.getComplete();
+            }
         },
         jumpDetails(v) {
             let data = v;
             delete data.reserve.content;
             this.jumpRouter("/pages/appointment/orderDetails/index", data);
+        },
+        openCode(v) {
+            uni.showModal({
+                title: "验证码",
+                content: v,
+            });
         },
     },
     computed: {},
@@ -173,7 +184,7 @@ export default {
     .btn {
         width: 144upx;
         height: 50upx;
-        border: 1upx solid #2d84ed;
+        border: 2upx solid #2d84ed;
         border-radius: 24upx;
         position: absolute;
         bottom: 20upx;

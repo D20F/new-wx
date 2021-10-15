@@ -1,7 +1,7 @@
 <template>
     <view class="view">
         <view class="item">
-            <text class="time">{{ query.time }}</text>
+            <text class="time">{{ query.createTime }}</text>
             <view class="content">
                 <text class="complaint">{{ query.content }}</text>
             </view>
@@ -56,7 +56,6 @@ export default {
         border-radius: 15upx;
         padding: 20upx;
         .complaint {
-            height: 190upx;
             text-align: left;
             font-size: 28upx;
             color: #666666;

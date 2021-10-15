@@ -36,7 +36,7 @@
                 <text>{{ list.hotelCount }}</text>
             </view>
             <view class="line"></view>
-            <view @click="jumpRouter('/')" class="item">
+            <view @click="jumpRouter('/mall/commodity/index')" class="item">
                 <text>我的商品</text>
                 <text>{{ list.ordersCount }}</text>
             </view>
@@ -83,18 +83,7 @@
                 />
             </view>
         </view>
-        <u-popup
-            width="575"
-            height="300"
-            closeable
-            v-if="userShow"
-            v-model="userShow"
-            mode="center"
-            border-radius="14"
-        >
-            <text class="userTitle">请求授权用户头像和昵称</text>
-            <view class="btn" @click="getUser">授权</view>
-        </u-popup>
+
         <phonePopup v-if="login_show"></phonePopup>
     </view>
 </template>
@@ -103,7 +92,6 @@
 import public_mixin from "@/mixins/public.js";
 import phone_popup from "@/component/phone_popup/index";
 import { getAppUser } from "@/api/api_mapi";
-import { getStorage, setStorage } from "@/utils/storage.js";
 
 export default {
     name: "civil",
@@ -118,7 +106,7 @@ export default {
                 {
                     image: "http://res.yitonginfo.com/xzwj/my/list6.png",
                     title: "购物车",
-                    url: "",
+                    url: "/mall/cart/index",
                 },
                 {
                     image: "http://res.yitonginfo.com/xzwj/my/list2.png",
@@ -149,7 +137,6 @@ export default {
                 throughTrainCount: 0,
                 ticketCount: 0,
             },
-            userShow: false,
         };
     },
     components: {
@@ -163,22 +150,7 @@ export default {
     methods: {
         init() {
             this.getAppUser();
-            getStorage("account")
-                .then((res) => {
-                    this.$store.commit("accountFun", res);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    this.userShow = true;
-                });
-            getStorage("avatar")
-                .then((res) => {
-                    this.$store.commit("avatarFun", res);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    this.userShow = true;
-                });
+ 
         },
         getAppUser() {
             getAppUser()
@@ -199,23 +171,7 @@ export default {
                     console.log(err);
                 });
         },
-        getUser() {
-            let that = this;
-            wx.getUserProfile({
-                desc: "获取微信用户的头像和昵称",
-                success: function (res) {
-                    // console.log(res);
-                    setStorage("account", res.userInfo.nickName);
-                    setStorage("avatar", res.userInfo.avatarUrl);
-                    that.$store.commit("accountFun", res.userInfo.nickName);
-                    that.$store.commit("avatarFun", res.userInfo.avatarUrl);
-                    that.userShow = false;
-                },
-                fail: (err) => {
-                    that.userShow = false;
-                },
-            });
-        },
+
     },
     computed: {
         login_show() {
