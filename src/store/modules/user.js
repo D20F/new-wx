@@ -37,6 +37,14 @@ const PUBLIC = {
         userIdFun(state, data) {
             state.userId = data;
         },
+        clearFun(state, data) {
+            state.account = '未登录';
+            state.nickName = '';
+            state.avatar = 'http://res.yitonginfo.com/xzwj/my/avatar.png';
+            state.openId = '';
+            state.token = '';
+            state.userId = '';
+        },
     },
     actions: {
 

@@ -1,7 +1,18 @@
 <template>
     <view class="view">
         <view class="header">
-            <text class="title">{{ list.title }}</text>
+            <view class="title" @click="tipShow = true">
+                <text>{{ list.title }}</text>
+                <view>
+                    <text>《示例查看》</text>
+                    <u-icon
+                        v-show="formType == '散客'"
+                        name="question-circle"
+                        color="#2979ff"
+                        size="30"
+                    ></u-icon>
+                </view>
+            </view>
             <view class="phone" @click="playPhone(list.phone)">
                 <u-icon name="phone" color="#2979ff" size="28"></u-icon>
                 <text>
@@ -39,6 +50,19 @@
                 <text>{{ list.warm }}</text> -->
             </view></formGrounp
         >
+        <u-popup
+            v-if="tipShow"
+            v-model="tipShow"
+            mode="center"
+            closeable
+            border-radius="20"
+        >
+            <video
+                id="myVideo"
+                :show-fullscreen-btn="false"
+                :src="list.videoUrl"
+            ></video>
+        </u-popup>
     </view>
 </template>
 
@@ -57,8 +81,10 @@ export default {
                 address: " ",
                 phone: "",
                 warm: " ",
+                videoUrl: " ",
             },
             formType: "散客",
+            tipShow: false,
         };
     },
     components: {
@@ -75,13 +101,14 @@ export default {
             let type = 2;
             getReserveApp(type)
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         this.list = {
                             title: res.data.title,
                             address: res.data.address,
                             phone: res.data.tel,
                             warm: res.data.warm,
+                            videoUrl: res.data.videoUrl,
                         };
                     }
                 })
@@ -138,11 +165,25 @@ export default {
     //     }
     // }
     .title {
-        font-size: 36upx;
-        font-weight: 600;
-        color: #333333;
-        line-height: 70upx;
+        height: 70upx;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 20upx;
+        text {
+            font-size: 36upx;
+            font-weight: 600;
+            color: #333333;
+        }
+        view {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text {
+                font-size: 24upx;
+                color: #2d84ed;
+            }
+        }
     }
     .phone {
         margin-bottom: 20upx;
@@ -175,5 +216,9 @@ export default {
         font-size: 28upx;
         margin-bottom: 30upx;
     }
+}
+#myVideo {
+    border-radius: 20upx;
+    margin: 40px 10px 10px 10px;
 }
 </style>

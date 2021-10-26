@@ -26,6 +26,14 @@
             </view>
         </view>
 
+        <btnLike
+            :disabled="true"
+            :likes="list.likes"
+            :likeId="list.id"
+            :baseCount="list.baseCount"
+            :likesCount="list.likesCount"
+            :type="3"
+        />
         <evaluation :list="comment" />
 
         <view class="btn">
@@ -51,6 +59,7 @@
 import public_mixin from "@/mixins/public.js";
 import evaluation from "@/component/evaluation/index.vue";
 import { getTicketApp, getTicketComment } from "@/api/api_mapi";
+import btnLike from "@/component/btnLike/index.vue";
 
 export default {
     name: "ticketsDetails",
@@ -72,6 +81,9 @@ export default {
                 longitude: "",
                 latitude: "",
                 warm: "",
+                likes: "",
+                baseCount: "",
+                likesCount: "",
             },
             swiper_list: [],
             comment: [],
@@ -84,6 +96,7 @@ export default {
     },
     components: {
         evaluation,
+        btnLike,
     },
     mixins: [public_mixin],
     onLoad(option) {
@@ -116,6 +129,9 @@ export default {
                             longitude: res.data.longitude,
                             latitude: res.data.latitude,
                             warm: res.data.reminder,
+                            likes: res.data.likes,
+                            baseCount: res.data.baseCount,
+                            likesCount: res.data.likesCount,
                         };
                         let arr = [];
                         for (const item of res.data.rotationList) {
@@ -149,11 +165,10 @@ export default {
         },
         openMap() {
             wx.openLocation({
-                longitude: ~~this.list.longitude,
-                latitude: ~~this.list.latitude,
+                longitude: parseFloat(this.list.longitude),
+                latitude: parseFloat(this.list.latitude),
                 name: this.list.title,
                 address: this.list.address,
-                scale: 6,
             });
         },
         playPhone(data) {

@@ -2,7 +2,7 @@
     <view class="view">
         <view class="formBox">
             <u-form :model="form" ref="uForm">
-                <u-form-item label="预约时间" label-width="150">
+                <u-form-item label="上车时间" label-width="150">
                     <u-input
                         @click="time.timeShow = true"
                         :disabled="true"
@@ -17,6 +17,7 @@
                     ref="selectType"
                     @changeCombo="changeCombo"
                     :list="typeList"
+                    :videoUrl="videoUrl"
                 />
                 <u-form-item label="预约者" label-width="150"
                     ><u-input
@@ -66,6 +67,23 @@
                         </u-radio-group>
                     </view>
                 </u-form-item>
+                <view class="header">
+                    <text>喀什和易行核酸绿码</text>
+                </view>
+                <photograph
+                    @changeUrl="changeGreenCode"
+                    :imgUrl="form.greenCode"
+                />
+                <view class="header"> <text>大数据行程卡</text> </view
+                ><photograph
+                    @changeUrl="changeTravel"
+                    :imgUrl="form.travelCard"
+                />
+                <view class="header"> <text>边防证</text> </view
+                ><photograph
+                    @changeUrl="changePassCheck"
+                    :imgUrl="form.passCheck"
+                />
             </u-form>
         </view>
 
@@ -106,6 +124,7 @@
             @confirm="changeTime"
             :params="time.params"
         ></periodPicker>
+
     </view>
 </template>
 
@@ -113,7 +132,9 @@
 import public_mixin from "@/mixins/public.js";
 import { regular_phone, regular_identityNumber } from "@/utils/regular.js";
 import uploadIdCard from "@/component/uploadIdCard/index.vue";
-import periodPicker from "@/component/periodPicker/index.vue";
+import periodPicker from "./periodPicker/index.vue";
+import photograph from "@/component/photograph/index.vue";
+
 import selectType from "./selectType/index.vue";
 import { getComboPage, addThrough, getComboQuantity } from "@/api/api_mapi";
 
@@ -133,6 +154,9 @@ export default {
                 price: 0,
                 makeDate: "",
                 leaveDate: "",
+                greenCode: "",
+                travelCard: "",
+                passCheck: "",
             },
             typeList: [],
             time: {
@@ -142,14 +166,14 @@ export default {
                     month: true,
                     day: true,
                     hour: true,
-                    hourEnd: true,
                 },
             },
             protocol: false,
             warm: "",
+            videoUrl: "",
         };
     },
-    components: { uploadIdCard, periodPicker, selectType },
+    components: { uploadIdCard, selectType, photograph, periodPicker },
     mixins: [public_mixin],
     onLoad(option) {
         // console.log(JSON.parse(option.data));
@@ -158,11 +182,10 @@ export default {
             if (query.reOrder == true) {
                 // 重复下单跳转表单  初始化
                 this.initForm(JSON.parse(option.data));
-                this.getComboPage(4);
                 this.warm = query.reserve.warm;
             } else {
-                this.getComboPage(query.id);
                 this.warm = query.warm;
+                this.videoUrl = query.videoUrl;
             }
         }
     },
@@ -171,9 +194,9 @@ export default {
         getComboPage(id) {
             getComboPage({
                 foreignId: id,
+                boardingTime: this.form.makeDate.split(" ")[1] + ":00",
             })
                 .then((res) => {
-                    console.log(res);
                     if (res.status == 200) {
                         let arr = [];
                         for (const item of res.data) {
@@ -192,25 +215,16 @@ export default {
                 });
         },
         changeCombo(data) {
-            // console.log(data);
-            if (this.form.makeDate == "") {
-                uni.showToast({
-                    icon: "none",
-                    title: "请选择预约时间",
-                });
-                return this.$refs.selectType.changeCurrent(-1);
-            }
             this.form.price = data.price;
             this.form.type = data.id;
             getComboQuantity(this.form.type, {
                 makeDate: this.form.makeDate.split(" ")[0],
             }).then((res) => {
-                // console.log(res);
                 if (res.status == 200) {
                     if (res.data < 1) {
                         this.form.type = "";
                         this.form.price = 0;
-                        this.$refs.selectType.changeCurrent(-1);
+                        this.$refs.selectType.clear();
                         uni.showToast({
                             icon: "none",
                             title: "本套餐已售完,请选择其他套餐",
@@ -219,7 +233,7 @@ export default {
                 } else {
                     this.form.type = "";
                     this.form.price = 0;
-                    this.$refs.selectType.changeCurrent(-1);
+                    this.$refs.selectType.clear();
                     uni.showToast({
                         icon: "none",
                         title: "本套餐已售完,请选择其他套餐",
@@ -231,39 +245,21 @@ export default {
             this.form = data;
             getComboPage({
                 foreignId: 4,
+                boardingTime: this.form.makeDate.split(" ")[1] + ":00",
             }).then((res) => {
-                console.log(res);
                 if (res.status == 200) {
-                    for (let i = 0; i < res.data.length; i++) {
-                        if (res.data[i].id == this.form.type) {
-                            this.form.price = res.data[i].amount;
-                            this.form.type = res.data[i].id;
-                            this.$refs.selectType.changeCurrent(i);
-                        }
-                    }
-                }
-            });
-            getComboQuantity(this.form.type, {
-                makeDate: this.form.makeDate.split(" ")[0],
-            }).then((res) => {
-                // console.log(res);
-                if (res.status == 200) {
-                    if (res.data < 1) {
-                        this.form.type = "";
-                        this.form.price = 0;
-                        this.$refs.selectType.changeCurrent(-1);
-                        uni.showToast({
-                            icon: "none",
-                            title: "本套餐已售完,请选择其他套餐",
+                    let arr = [];
+                    for (const item of res.data) {
+                        arr.push({
+                            title: item.name,
+                            content: item.remark,
+                            price: item.amount,
+                            id: item.id,
                         });
                     }
-                } else {
-                    this.form.type = "";
-                    this.form.price = 0;
-                    this.$refs.selectType.changeCurrent(-1);
-                    uni.showToast({
-                        icon: "none",
-                        title: "本套餐已售完,请选择其他套餐",
+                    this.typeList = arr;
+                    this.$nextTick(() => {
+                        this.$refs.selectType.setType(this.form.type);
                     });
                 }
             });
@@ -271,6 +267,15 @@ export default {
         changeIdCard(data) {
             this.form.front = data.front;
             this.form.negative = data.negative;
+        },
+        changeTravel(data) {
+            this.form.travelCard = data;
+        },
+        changePassCheck(data) {
+            this.form.passCheck = data;
+        },
+        changeGreenCode(data) {
+            this.form.greenCode = data;
         },
         changeTime(data) {
             this.form.time =
@@ -281,8 +286,6 @@ export default {
                 data.day +
                 " " +
                 data.hour +
-                ":00 ～ " +
-                data.hourEnd +
                 ":00";
             this.form.makeDate =
                 data.year +
@@ -300,8 +303,12 @@ export default {
                 "-" +
                 data.day +
                 " " +
-                data.hourEnd +
+                data.hour +
                 ":00";
+            this.form.type = "";
+            this.form.price = 0;
+            this.$refs.selectType.clear();
+            this.getComboPage(4);
         },
 
         submit() {
@@ -341,13 +348,16 @@ export default {
                 leaveDate: this.form.leaveDate,
                 mobile: this.form.phone,
                 reserveName: this.form.name,
+                greenCode: this.form.greenCode,
+                travelCard: this.form.travelCard,
+                passCheck: this.form.passCheck,
                 result: this.form.nucleicAcid == "阴性" ? false : true, // 给 阳性true 阴性false
             };
             let that = this;
-            console.log(data);
+            // console.log(data);
             addThrough(data)
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         wx.requestPayment({
                             appId: res.data.appId,
@@ -491,6 +501,17 @@ export default {
             font-size: 32upx;
             line-height: 90upx;
         }
+    }
+}
+.header {
+    height: 100upx;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text {
+        margin-right: 10upx;
+        color: #333333;
+        font-size: 29upx;
     }
 }
 </style>

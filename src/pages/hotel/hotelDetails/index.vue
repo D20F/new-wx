@@ -24,7 +24,14 @@
                 <u-parse :html="list.content"></u-parse>
             </view>
         </view>
-
+        <btnLike
+            :disabled="true"
+            :likes="list.likes"
+            :likeId="list.id"
+            :baseCount="list.baseCount"
+            :likesCount="list.likesCount"
+            :type="2"
+        />
         <evaluation :list="comment" />
 
         <view class="btn">
@@ -50,6 +57,7 @@
 import public_mixin from "@/mixins/public.js";
 import evaluation from "@/component/evaluation/index.vue";
 import { getHotelApp, getHotelComment } from "@/api/api_mapi";
+import btnLike from "@/component/btnLike/index.vue";
 
 export default {
     name: "reserveHotel",
@@ -68,6 +76,9 @@ export default {
                 content: "",
                 longitude: "",
                 latitude: "",
+                likes: "",
+                baseCount: "",
+                likesCount: "",
             },
             swiper_list: [],
             comment: [],
@@ -80,6 +91,7 @@ export default {
     },
     components: {
         evaluation,
+        btnLike,
     },
     mixins: [public_mixin],
     onLoad(option) {
@@ -111,6 +123,9 @@ export default {
                             longitude: res.data.longitude,
                             latitude: res.data.latitude,
                             warm: res.data.reminder,
+                            likes: res.data.likes,
+                            baseCount: res.data.baseCount,
+                            likesCount: res.data.likesCount,
                         };
                         let arr = [];
                         for (const item of res.data.rotationList) {
@@ -144,11 +159,10 @@ export default {
         },
         openMap() {
             uni.openLocation({
-                longitude: ~~this.list.longitude,
-                latitude: ~~this.list.latitude,
+                longitude: parseFloat(this.list.longitude),
+                latitude: parseFloat(this.list.latitude),
                 name: this.list.title,
                 address: this.list.address,
-                scale: 7,
             });
         },
         playPhone(data) {

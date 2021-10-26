@@ -62,7 +62,14 @@
                         v-model="formGrounp.phone"
                     />
                 </u-form-item>
-                <text class="header">预约信息</text>
+                <view class="header" @click="tipShow = true">
+                    <text>预约信息</text>
+                    <u-icon
+                        name="question-circle"
+                        color="#2979ff"
+                        size="30"
+                    ></u-icon>
+                </view>
                 <photograph
                     @changeUrl="changeUrl"
                     :imgUrl="formGrounp.reserveImg"
@@ -82,6 +89,13 @@
             @confirm="changeTime"
             :params="time.params"
         ></periodPicker>
+        <u-popup v-model="tipShow" mode="center" closeable border-radius="20">
+            <image
+                @click="previewimg"
+                src="http://res.yitonginfo.com/xzwj/home/reservationPhoto.png"
+                mode="aspectFit"
+            />
+        </u-popup>
     </view>
 </template>
 
@@ -119,6 +133,7 @@ export default {
                     hourEnd: true,
                 },
             },
+            tipShow: false,
         };
     },
     components: {
@@ -136,6 +151,13 @@ export default {
                 phoneNumber: data + "",
                 success: () => {},
                 fail: (err) => {},
+            });
+        },
+        previewimg() {
+            uni.previewImage({
+                urls: [
+                    "http://res.yitonginfo.com/xzwj/home/reservationPhoto.png",
+                ],
             });
         },
         radioGroupChange(data) {
@@ -261,9 +283,14 @@ export default {
     }
 }
 .header {
-    text-align: left;
-    color: #333333;
-    font-size: 28upx;
-    line-height: 100upx;
+    height: 100upx;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text {
+        margin-right: 10upx;
+        color: #333333;
+        font-size: 28upx;
+    }
 }
 </style>

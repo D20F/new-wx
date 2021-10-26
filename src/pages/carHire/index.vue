@@ -40,13 +40,12 @@ export default {
     components: {},
     mixins: [public_mixin],
     onLoad(option) {
-        let i = JSON.parse(option.data);
-        this.getReserveApp(i);
+        this.getReserveApp();
     },
     onShow() {},
     methods: {
-        getReserveApp(i) {
-            getReserveApp(i)
+        getReserveApp() {
+            getReserveApp(1)
                 .then((res) => {
                     // console.log(res);
                     if (res.status == 200) {

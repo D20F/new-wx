@@ -32,8 +32,10 @@
                         </view>
                         <view>
                             <text>{{ item.title }}</text>
-                            <text>地址: {{ item.address }}</text>
-                            <view @click="playPhone(item.phone)" class="phone">
+                            <text @click="openMap(item)"
+                                >地址: {{ item.address }}</text
+                            >
+                            <view v-if="item.phone" @click="playPhone(item.phone)" class="phone">
                                 <u-icon
                                     name="phone"
                                     color="#2979ff"
@@ -64,8 +66,10 @@
                         </view>
                         <view>
                             <text>{{ item.title }}</text>
-                            <text>地址: {{ item.address }}</text>
-                            <view @click="playPhone(item.phone)" class="phone">
+                            <text @click="openMap(item)"
+                                >地址: {{ item.address }}</text
+                            >
+                            <view v-if="item.phone" @click="playPhone(item.phone)" class="phone">
                                 <u-icon
                                     name="phone"
                                     color="#2979ff"
@@ -96,8 +100,10 @@
                         </view>
                         <view>
                             <text>{{ item.title }}</text>
-                            <text>地址: {{ item.address }}</text>
-                            <view @click="playPhone(item.phone)" class="phone">
+                            <text @click="openMap(item)"
+                                >地址: {{ item.address }}</text
+                            >
+                            <view v-if="item.phone" @click="playPhone(item.phone)" class="phone">
                                 <u-icon
                                     name="phone"
                                     color="#2979ff"
@@ -188,6 +194,8 @@ export default {
                                 title: item.title,
                                 phone: item.mobile,
                                 address: item.address,
+                                latitude: item.latitude,
+                                longitude: item.longitude,
                                 id: item.id,
                             });
                         }
@@ -261,7 +269,6 @@ export default {
                         ? this.getConveniencePage(current)
                         : void 0;
                     break;
- 
             }
         },
         playPhone(data) {
@@ -269,6 +276,14 @@ export default {
                 phoneNumber: data + "",
                 success: () => {},
                 fail: (err) => {},
+            });
+        },
+        openMap(item) {
+            uni.openLocation({
+                longitude: parseFloat(item.longitude),
+                latitude: parseFloat(item.latitude),
+                name: item.title,
+                address: item.address,
             });
         },
     },

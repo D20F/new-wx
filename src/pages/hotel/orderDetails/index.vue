@@ -116,11 +116,40 @@
                 </view>
             </view>
             <view v-else-if="form.status == 3" class="complete">
-                <view>
+                <view class="complete_one">
                     <text> 已完成 </text>
                 </view>
-                <view @click="jumpRouter('/pages/hotel/comment/index', form)">
+                <view
+                    class="complete_two"
+                    @click="jumpRouter('/pages/hotel/comment/index', form)"
+                >
                     <text> 去评价 </text>
+                </view>
+                <view class="complete_three">
+                    <btnLike
+                        :countDisabled="false"
+                        :likes="form.likes"
+                        :likeId="form.id"
+                        :type="2"
+                    />
+                </view>
+            </view>
+            <view v-else-if="form.status == 5" class="completes">
+                <view class="complete_one">
+                    <text> 已完成 </text>
+                </view>
+                <view
+                    class="complete_two"
+                >
+                    <text> 已评价 </text>
+                </view>
+                <view class="complete_three">
+                    <btnLike
+                        :countDisabled="false"
+                        :likes="form.likes"
+                        :likeId="form.id"
+                        :type="2"
+                    />
                 </view>
             </view>
             <view class="repeat" v-else-if="form.status == -1">
@@ -138,6 +167,7 @@
 <script>
 import public_mixin from "@/mixins/public.js";
 import { wxReservePay, cancelOrder } from "@/api/api_mapi";
+import btnLike from "@/component/btnLike/index.vue";
 
 export default {
     name: "",
@@ -146,13 +176,13 @@ export default {
             form: {},
         };
     },
-    components: {},
+    components: { btnLike },
     mixins: [public_mixin],
     onLoad(option) {
         let query = JSON.parse(option.data);
         query["reOrder"] = true;
         this.form = query;
-        // console.log(JSON.parse(option.data));
+        console.log(JSON.parse(option.data));
     },
     created() {},
     methods: {
@@ -396,8 +426,8 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        view {
-            width: 45%;
+        .complete_one {
+            width: 40%;
             height: 90upx;
             border-radius: 15upx;
             text-align: center;
@@ -408,12 +438,95 @@ export default {
                 line-height: 90upx;
                 font-size: 32upx;
             }
-        }
-        view:nth-child(1) {
             background: #dedede;
         }
-        view:nth-child(2) {
+        .complete_two {
+            width: 40%;
+            height: 90upx;
+            border-radius: 15upx;
+            text-align: center;
+            margin: 0 auto;
+            position: relative;
+            text {
+                color: #ffffff;
+                line-height: 90upx;
+                font-size: 32upx;
+            }
             background: #ed5b5b;
+        }
+        .complete_three {
+            width: 90upx;
+            height: 90upx;
+            border-radius: 15upx;
+            text-align: center;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2upx solid #818181;
+            text {
+                color: #ffffff;
+                line-height: 90upx;
+                font-size: 32upx;
+            }
+            view{
+                width: 40%;
+            }
+        }
+    }
+    .completes {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .complete_one {
+            width: 40%;
+            height: 90upx;
+            border-radius: 15upx;
+            text-align: center;
+            margin: 0 auto;
+            position: relative;
+            text {
+                color: #ffffff;
+                line-height: 90upx;
+                font-size: 32upx;
+            }
+            background: #dedede;
+        }
+        .complete_two {
+            width: 40%;
+            height: 90upx;
+            border-radius: 15upx;
+            text-align: center;
+            margin: 0 auto;
+            position: relative;
+            text {
+                color: #ffffff;
+                line-height: 90upx;
+                font-size: 32upx;
+            }
+            background: #dedede;
+        }
+        .complete_three {
+            width: 90upx;
+            height: 90upx;
+            border-radius: 15upx;
+            text-align: center;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2upx solid #818181;
+            text {
+                color: #ffffff;
+                line-height: 90upx;
+                font-size: 32upx;
+            }
+            view{
+                width: 40%;
+            }
         }
     }
     .repeat {

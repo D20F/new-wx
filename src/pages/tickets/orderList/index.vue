@@ -211,6 +211,7 @@ export default {
             let data = {
                 createTime: item.createTime,
                 id: item.id,
+                likes: item.likes,
                 period: item.ticket.startTime + " ~ " + item.ticket.endTime,
                 identity: item.identity,
                 writeOffNo: item.writeOffNo,

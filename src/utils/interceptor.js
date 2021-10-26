@@ -44,6 +44,19 @@ uni.addInterceptor('request', {
                     });
                     break;
             }
+            switch (args.data.status) {
+                case 401:
+                    store.commit("clearFun");
+                    uni.clearStorage();
+                    uni.reLaunch({
+                        url: "/pages/home/home/index",
+                    });
+                    store.commit("loginShowFun", true);
+                    break;
+                default:
+
+                    break;
+            }
         }
     },
     fail(err) {

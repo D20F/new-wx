@@ -30,6 +30,14 @@
             </view>
         </view>
 
+        <btnLike 
+            :likes="list.likes"
+            :likeId="list.id"
+            :baseCount="list.baseCount"
+            :likesCount="list.likesCount"
+            :type="1"
+        />
+
         <commentArea
             :list="comment"
             :reply="true"
@@ -53,6 +61,7 @@
 import public_mixin from "@/mixins/public.js";
 import commentArea from "@/component/commentArea/index.vue";
 import sendComment from "@/component/sendComment/index.vue";
+import btnLike from "@/component/btnLike/index.vue";
 
 import {
     getTravelGuidesDetails,
@@ -71,6 +80,9 @@ export default {
                 score: "",
                 id: "",
                 publisher: "",
+                likes: "",
+                baseCount: "",
+                likesCount: "",
             },
             swiper_list: [],
             contentList: [],
@@ -85,6 +97,7 @@ export default {
     components: {
         commentArea,
         sendComment,
+        btnLike,
     },
     mixins: [public_mixin],
     onLoad(option) {
@@ -127,6 +140,9 @@ export default {
                             id: res.data.id,
                             publisher: res.data.publisher,
                             content: res.data.content,
+                            likes: res.data.likes,
+                            baseCount: res.data.baseCount,
+                            likesCount: res.data.likesCount,                   
                         };
                         let arr = [];
                         for (const item of res.data.rotationList) {

@@ -187,15 +187,15 @@ export default {
     @include flex(space-between, center);
     flex-wrap: wrap;
     position: relative;
-    &::after {
-      content: "";
-      position: absolute;
-      height: 100%;
-      width: 50rpx;
-      background: linear-gradient(to right, transparent, rgb(255, 255, 255));
-      top: 0;
-      right: 40rpx;
-    }
+    // &::after {
+    //   content: "";
+    //   position: absolute;
+    //   height: 100%;
+    //   width: 50rpx;
+    //   background: linear-gradient(to right, transparent, rgb(255, 255, 255));
+    //   top: 0;
+    //   right: 40rpx;
+    // }
     .scroll-view_H {
       white-space: nowrap;
       width: calc(100% - 40rpx);

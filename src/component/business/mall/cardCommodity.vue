@@ -16,6 +16,13 @@
                     <view class="card-commodity-tag-text">
                         已售: {{ dataSource[keyMap.sales] }}
                     </view>
+                    <view class="card-commodity-tag-text">
+                        点赞:
+                        {{
+                            dataSource[keyMap.baseCount] +
+                            dataSource[keyMap.likesCount]
+                        }}
+                    </view>
                 </view>
                 <view class="card-commodity-price">
                     <view class="card-commodity-new-price">
@@ -47,6 +54,8 @@ export default {
                     image: "cover",
                     title: "name",
                     sales: "salesCount",
+                    baseCount: "baseCount",
+                    likesCount: "likesCount",
                     price: "minPrice",
                     // originalPrice: "originalPrice",
                 };
@@ -97,6 +106,10 @@ export default {
 
 .card-commodity-tag {
     margin-top: 5px;
+    display: flex;
+    view:nth-child(2){
+        margin-left: 10upx;
+    }
 }
 
 .card-commodity-tag-text {

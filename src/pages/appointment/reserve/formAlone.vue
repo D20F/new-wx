@@ -104,7 +104,16 @@
                     @changeUrl="changeUrl"
                     :imgUrl="formAlone.nucleicAcidImg"
                 />
-
+                <u-form-item label="喀什和易行核酸绿码" label-width="280"> </u-form-item>
+                <photograph
+                    @changeUrl="changeGreenCode"
+                    :imgUrl="formAlone.greenCode"
+                />
+                <u-form-item label="大数据行程卡" label-width="280"> </u-form-item>
+                <photograph
+                    @changeUrl="changeTravel"
+                    :imgUrl="formAlone.travelCard"
+                />
                 <u-form-item
                     label-position="top"
                     label="事由"
@@ -175,6 +184,8 @@ export default {
                 destination: "",
                 makeDate: "",
                 leaveDate: "",
+                greenCode: "",
+                travelCard: "",
             },
             time: {
                 timeShow: false,
@@ -214,6 +225,12 @@ export default {
         },
         changeUrl(data) {
             this.formAlone.nucleicAcidImg = data;
+        },
+        changeTravel(data) {
+            this.formAlone.travelCard = data;
+        },
+        changeGreenCode(data) {
+            this.formAlone.greenCode = data;
         },
         changeTime(data) {
             this.formAlone.time =
@@ -281,6 +298,8 @@ export default {
                 result: this.formAlone.nucleicAcid == "阴性" ? false : true, // 给 阳性true 阴性false
                 sex: this.formAlone.gender == "男" ? 1 : 2, // 给   1 男 2 女
                 thing: this.formAlone.reason,
+                greenCode: this.formAlone.greenCode,
+                travelCard: this.formAlone.travelCard,
             };
             // console.log(data);
             addVisa(data)

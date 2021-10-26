@@ -52,15 +52,13 @@ export default {
     components: {},
     mixins: [public_mixin],
     onLoad(option) {
-        let i = JSON.parse(option.data);
-        this.getReserveApp(i);
+        this.getReserveApp();
     },
     onShow() {},
     methods: {
-        getReserveApp(i) {
-            getReserveApp(i)
+        getReserveApp() {
+            getReserveApp(4)
                 .then((res) => {
-                    // console.log(res);
                     if (res.status == 200) {
                         this.list = res.data;
                     }
@@ -79,6 +77,7 @@ export default {
         jumpReserve() {
             this.jumpRouter("/pages/throughCar/reserveThrough/index", {
                 warm: this.list.warm,
+                videoUrl: this.list.videoUrl,
                 id: this.list.id,
             });
         },

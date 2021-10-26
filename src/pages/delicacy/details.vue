@@ -33,10 +33,10 @@
 
 <script>
 import public_mixin from "@/mixins/public.js";
-import { getScenicSpotApp } from "@/api/api_mapi";
+import { getFoodClockApp } from "@/api/api_mapi";
 
 export default {
-    name: "reserveHotel",
+    name: "",
     data() {
         return {
             list: {
@@ -57,12 +57,12 @@ export default {
     mixins: [public_mixin],
     onLoad(option) {
         let id = JSON.parse(option.data);
-        this.getScenicSpotApp(id);
+        this.getFoodClockApp(id);
     },
     onShow() {},
     methods: {
-        getScenicSpotApp(id) {
-            getScenicSpotApp(id)
+        getFoodClockApp(id) {
+            getFoodClockApp(id)
                 .then((res) => {
                     // console.log(res);
                     if (res.status == 200) {
@@ -95,8 +95,8 @@ export default {
             uni.openLocation({
                 longitude: parseFloat(this.list.longitude),
                 latitude: parseFloat(this.list.latitude),
-                name: this.list.title,
-                address: this.list.address,
+                name:this.list.title,
+                address:this.list.address,
             });
         },
     },

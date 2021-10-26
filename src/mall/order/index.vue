@@ -36,6 +36,7 @@
             type="order"
             :dataSource="item"
             :dataIndex="index"
+            :orderStatus="order.status"
             v-for="(item, index) in order.ordersProductList"
             :key="index"
           />
@@ -145,7 +146,6 @@
 import cartItem from "@/component/business/mall/cartItem";
 import addrSele from "@/component/business/mall/addrSele";
 import { orderInfo, editOrder, wxPay, refundOrder } from "@/api/mall";
-import { setStorage } from "@/utils/storage.js";
 export default {
   components: { cartItem, addrSele },
   data() {
@@ -159,24 +159,6 @@ export default {
     };
   },
   onLoad(options) {
-    // let d = {
-    //   nickname: "zlzl",
-    //   avatar:
-    //     "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
-    //   openId: "oPuSl4ulu5Nuo3fvuQpoes2Vnc5c",
-    //   token: "863a27457ca3475ab222e1137fdaf3c1",
-    //   userId: "3595314797150208",
-    // };
-    // setStorage("account", d.nickname);
-    // setStorage("avatar", d.avatar);
-    // setStorage("openId", d.openId);
-    // setStorage("token", d.token);
-    // setStorage("userId", d.userId);
-    // this.$store.commit("accountFun", d.nickname);
-    // this.$store.commit("avatarFun", d.avatar);
-    // this.$store.commit("openIdFun", d.openId);
-    // this.$store.commit("tokenFun", d.token);
-    // this.$store.commit("userIdFun", d.userId);
     this.orderId = options.orderId;
     this.orderStatus = options.status;
     this.getOrders();

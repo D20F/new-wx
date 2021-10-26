@@ -47,6 +47,8 @@ export default {
                 id: "id",
                 reserve: "reserve",
                 writeOffNo: "writeOffNo",
+                greenCode: "greenCode",
+                travelCard: "travelCard",
             };
             let data = {};
             for (const key in obj) {

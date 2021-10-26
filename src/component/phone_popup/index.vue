@@ -123,7 +123,7 @@ export default {
                                 );
 
                                 uni.reLaunch({
-                                    url: "/pages/home/home",
+                                    url: "/pages/home/home/index",
                                 });
 
                                 that.close();

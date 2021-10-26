@@ -93,8 +93,9 @@ export default {
     mixins: [public_mixin],
     onLoad(option) {},
     onShow() {
-        this.getPending();
-    },   onReachBottom() {
+        this.confirm(0);
+    },
+    onReachBottom() {
         this.current == 0 ? this.getPending() : this.getComplete();
     },
     methods: {
@@ -145,7 +146,6 @@ export default {
             };
             getThrough(data)
                 .then((res) => {
-                    // console.log(res);
                     if (res.status == 200) {
                         this.pending = [...this.pending, ...res.data.records];
                         this.page.page = this.page.page + 1;

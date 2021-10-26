@@ -1,22 +1,53 @@
 <template>
     <view class="switch">
-        <text class="title"> 预约类型 </text>
+        <u-form :model="form">
+            <u-form-item label="预约类型" label-width="150">
+                <u-input
+                    @click="selectShow"
+                    :disabled="true"
+                    type="select"
+                    input-align="right"
+                    placeholder="请选择类型"
+                    :customStyle="{ color: '#2D84ED', overflowX: 'auto' }"
+                    v-model="form.type"
+                /> </u-form-item
+        ></u-form>
         <view class="list">
-            <view class="item">
-                <view
-                    :class="{ on: current == index, off: current !== index }"
-                    v-for="(item, index) in list"
-                    :key="index"
-                    @click="confirm(index)"
-                >
-                    <text>{{ item.title }}</text>
-                </view>
-            </view>
             <view class="content">
                 <view></view>
                 <text>{{ content }}</text>
             </view>
+            <view class="demonstrate" @click="tipShow = true">
+                <u-icon
+                    name="question-circle"
+                    color="#2979ff"
+                    size="29"
+                ></u-icon>
+                <text>示例查看</text>
+            </view>
         </view>
+        <u-select
+            title="预约类型"
+            v-model="show"
+            valueName="id"
+            labelName="title"
+            :list="list"
+            @confirm="changeType"
+        ></u-select>
+        <u-popup
+            v-if="tipShow"
+            v-model="tipShow"
+            mode="center"
+            closeable
+            border-radius="20"
+        >
+            <video
+                id="myVideo"
+                style="border-radius: 10px; margin: 40px 10px 10px 10px"
+                :show-fullscreen-btn="false"
+                :src="videoUrl"
+            ></video>
+        </u-popup>
     </view>
 </template>
 <script>
@@ -29,30 +60,54 @@ export default {
                 return [];
             },
         },
-    },
-    created() {},
-    computed: {
-        content() {
-            if (this.list.length > 0 && this.current !== -1) {
-                return this.list[this.current].content;
-            } else {
-                return "请选择套餐";
-            }
+        videoUrl: {
+            type: String,
+            default: "",
         },
     },
+    created() {},
+    computed: {},
     data() {
         return {
-            current: -1,
+            show: false,
+            content: "请选择套餐",
+            form: {
+                type: "",
+            },
+            tipShow: false,
         };
     },
     methods: {
-        confirm(index) {
-            // console.log(index);
-            this.current = index;
-            this.$emit("changeCombo", this.list[this.current]);
+        selectShow() {
+            if (this.list.length == 0) {
+                return uni.showToast({
+                    icon: "none",
+                    title: "请选择上车时间",
+                });
+            }
+            this.show = true;
         },
-        changeCurrent(data) {
-            this.current = data;
+        changeType(e) {
+            for (const item of this.list) {
+                if (item.id == e[0].value) {
+                    this.content = item.content;
+                    this.form.type = item.title;
+                    this.$emit("changeCombo", item);
+                }
+            }
+        },
+        setType(id) {
+            for (const item of this.list) {
+                if (item.id == id) {
+                    this.content = item.content;
+                    this.form.type = item.title;
+                    this.$emit("changeCombo", item);
+                }
+            }
+        },
+        clear() {
+            this.form.type = "";
+            this.content = "请选择套餐";
         },
     },
 };
@@ -65,62 +120,43 @@ export default {
     z-index: 10;
     background: #ffffff;
 }
-.title {
-    text-align: left;
-    font-size: 28upx;
-    font-weight: 500;
-    color: #333333;
-    line-height: 80upx;
-}
 .list {
-    width: 100%;
-    .item {
-        width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16upx;
+    .content {
+        width: 520upx;
         display: flex;
         justify-content: left;
         align-items: center;
-        flex-wrap: wrap;
         view {
-            // width: 140upx;
-            margin: 0 20upx 16upx 0;
-            padding: 0 20upx;
-            height: 60upx;
-            border-radius: 35upx;
-            text {
-                line-height: 60upx;
-                font-size: 26upx;
-            }
+            width: 16upx;
+            height: 16upx;
+            background: #2d84ed;
+            border-radius: 50%;
+            margin-right: 15upx;
+        }
+        text {
+            width: 509upx;
+            text-align: left;
+            font-size: 26upx;
+            color: #2d84ed;
         }
     }
-    .on {
-        background: #2d84ed;
+    .demonstrate {
+        width: 150upx;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
         text {
-            color: #ffffff;
-        }
-    }
-    .off {
-        background: #f6f6f6;
-        text {
-            color: #999999;
+            color: #2d84ed;
+            font-size: 29upx;
         }
     }
 }
-.content {
-    display: flex;
-    justify-content: left;
-    align-items: center;
-    margin-top: 16upx;
-    view {
-        width: 16upx;
-        height: 16upx;
-        background: #2d84ed;
-        border-radius: 50%;
-        margin-right: 15upx;
-    }
-    text {
-        text-align: left;
-        font-size: 26upx;
-        color: #2d84ed;
-    }
+#myVideo {
+    border-radius: 10px;
+    margin: 40px 10px 10px 10px;
 }
 </style>

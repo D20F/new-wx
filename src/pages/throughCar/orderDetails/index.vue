@@ -72,6 +72,24 @@
                         v-model="form.nucleicAcid"
                     />
                 </u-form-item>
+                <u-form-item label="喀什和易行核酸绿码" label-width="280">
+                </u-form-item>
+                <photograph
+                    :disabled="true"
+                    :imgUrl="form.greenCode"
+                />
+                <u-form-item label="大数据行程卡" label-width="280">
+                </u-form-item>
+                <photograph
+                    :disabled="true"
+                    :imgUrl="form.travelCard"
+                />
+                <u-form-item label="边防证" label-width="180">
+                </u-form-item>
+                <photograph
+                    :disabled="true"
+                    :imgUrl="form.passCheck"
+                />
             </u-form>
         </view>
 
@@ -135,6 +153,7 @@
 import uploadIdCard from "@/component/uploadIdCard/index.vue";
 import public_mixin from "@/mixins/public.js";
 import { wxReservePay, cancelOrder } from "@/api/api_mapi";
+import photograph from "@/component/photograph/index.vue";
 
 export default {
     name: "",
@@ -146,6 +165,7 @@ export default {
 
     components: {
         uploadIdCard,
+        photograph,
     },
     mixins: [public_mixin],
     onLoad(option) {
@@ -153,7 +173,7 @@ export default {
         let query = JSON.parse(option.data);
 
         let obj = {
-            time: "makeDate leaveDate",
+            time: "makeDate",
             makeDate: "makeDate",
             leaveDate: "leaveDate",
             nucleicAcid: "result",
@@ -171,6 +191,9 @@ export default {
             id: "id",
             reserve: "reserve",
             writeOffNo: "writeOffNo",
+            greenCode: "greenCode",
+            travelCard: "travelCard",
+            passCheck: "passCheck",
         };
         let data = {};
         for (const key in obj) {
@@ -183,9 +206,7 @@ export default {
                     break;
                 case "time":
                     data[key] =
-                        query[obj[key].split(" ")[0]] +
-                        " ～ " +
-                        query[obj[key].split(" ")[1]].split(" ")[1];
+                        query[obj[key].split(" ")[0]]
                     break;
                 default:
                     data[key] = query[obj[key]];

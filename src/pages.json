@@ -1,7 +1,7 @@
 {
     "pages": [
         {
-            "path": "pages/home/home",
+            "path": "pages/home/home/index",
             "style": {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": true,
@@ -12,7 +12,7 @@
             }
         },
         {
-            "path": "pages/home/kashgar",
+            "path": "pages/home/kashgar/index",
             "style": {
                 "navigationBarTitleText": "图文介绍"
             }
@@ -238,6 +238,20 @@
             }
         },
         {
+            "path": "pages/delicacy/list",
+            "style": {
+                "navigationBarTitleText": "美食列表"
+            }
+        },
+        {
+            "path": "pages/delicacy/details",
+            "style": {
+                "app-plus": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
             "path": "pages/travellingGuideline/list",
             "style": {
                 "navigationBarTitleText": "旅游攻略"
@@ -434,7 +448,7 @@
         "backgroundColor": "#ffffff",
         "list": [
             {
-                "pagePath": "pages/home/home",
+                "pagePath": "pages/home/home/index",
                 "iconPath": "static/tabbar/home.png",
                 "selectedIconPath": "static/tabbar/homes.png",
                 "text": "首页"

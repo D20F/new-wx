@@ -108,7 +108,18 @@
                     :disabled="true"
                     :imgUrl="formAlone.nucleicAcidImg"
                 />
-
+                <u-form-item label="喀什和易行核酸绿码" label-width="280">
+                </u-form-item>
+                <photograph
+                    :disabled="true"
+                    :imgUrl="formAlone.greenCode"
+                />
+                <u-form-item label="大数据行程卡" label-width="280">
+                </u-form-item>
+                <photograph
+                    :disabled="true"
+                    :imgUrl="formAlone.travelCard"
+                />
                 <u-form-item
                     label-position="top"
                     label="事由"

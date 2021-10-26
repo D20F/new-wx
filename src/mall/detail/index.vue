@@ -2,7 +2,7 @@
     <view class="main-wrap">
         <view class="banner">
             <u-swiper
-                :list="productData.carouseList"
+                :list="swiperData"
                 height="360"
                 border-radius="0"
             ></u-swiper>
@@ -11,9 +11,14 @@
             <view class="info">
                 <view class="title">{{ productData.name }}</view>
                 <view class="flex">
-                    <view class="sold">已售：{{ productData.salesCount }}</view>
+                    <view class="sold">
+                        <text> 已售：{{ productData.salesCount }} </text>
+                        <text>
+                            点赞 :
+                            {{ productData.baseCount + productData.likesCount }}
+                        </text>
+                    </view>
                     <view class="price">
-                        <!-- <view class="old">¥ {{ productData.carouseList }}</view> -->
                         <view class="now">¥ {{ productData.minPrice }}</view>
                     </view>
                 </view>
@@ -77,10 +82,7 @@
                         :mode="skuIndex == index ? 'dark' : 'light'"
                         v-for="(item, index) in productData.specificationList"
                         :key="index"
-                        @click="
-                            skuIndex = index;
-                            buyCount = 1;
-                        "
+                        @click="selectSku(index)"
                     />
                 </view>
                 <view class="ctrl">
@@ -105,6 +107,12 @@
                 </view>
             </view>
         </u-popup>
+
+        <view class="kefu">
+            <button plain open-type="contact" send-message-title="客服">
+                <u-icon name="kefu-ermai" size="48"></u-icon>
+            </button>
+        </view>
     </view>
 </template>
 <script>
@@ -115,6 +123,7 @@ export default {
         return {
             productId: null,
             productData: {},
+            swiperData: [],
             popupShow: false,
             popupType: "cart",
             skuIndex: 0,
@@ -135,6 +144,11 @@ export default {
             getProduct(this.productId).then((res) => {
                 this.productData = res.data;
                 this.buyCount = 1;
+                let arr = [];
+                for (const item of res.data.carouseList) {
+                    arr.push({ image: item });
+                }
+                this.swiperData = arr;
             });
         },
         popupOpen(type) {
@@ -143,6 +157,10 @@ export default {
         },
         buyCountChange(e) {
             console.log(e);
+        },
+        selectSku(index) {
+            this.skuIndex = index;
+            this.buyCount = 1;
         },
         popConfirm() {
             if (this.popupType == "cart") {
@@ -208,9 +226,15 @@ export default {
                 padding: 12rpx 0 20rpx;
                 border-bottom: 2rpx solid #eeeeee;
                 .sold {
-                    color: #666;
-                    font-size: 26rpx;
-                    padding-top: 18rpx;
+                    display: flex;
+                    text {
+                        color: #666;
+                        font-size: 26rpx;
+                        padding-top: 18rpx;
+                    }
+                    text:nth-child(2) {
+                        margin-left: 10upx;
+                    }
                 }
                 .price {
                     @include flex(space-between);
@@ -304,6 +328,22 @@ export default {
         .btn {
             width: 100%;
         }
+    }
+}
+.kefu {
+    width: 100upx;
+    height: 100upx;
+    position: fixed;
+    background: #ffffff;
+    bottom: 150upx;
+    left: 24upx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10upx;
+    border: 1upx solid #eeeeee;
+    button {
+        border: 0;
     }
 }
 </style>

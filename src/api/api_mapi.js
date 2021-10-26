@@ -102,7 +102,7 @@ export const getServiceHotLinePage = (reqData) => {
     return getData(url, data);
 }
 /*
-    景区介绍列表
+    景点介绍列表
     params:{}
 */
 export const getScenicSpotPage = (reqData) => {
@@ -111,11 +111,29 @@ export const getScenicSpotPage = (reqData) => {
     return getData(url, data);
 }
 /*
-    景区介绍列表 详情
+    景点介绍列表 详情
     params:{}   
 */
 export const getScenicSpotApp = (id) => {
     const url = `/scenicSpot/app/${id}`;
+    const data = '';
+    return getData(url, data);
+}
+/*
+    美食打卡介绍列表
+    params:{}
+*/
+export const getFoodClockPage = (reqData) => {
+    const url = '/foodClock/app/page';
+    const data = reqData;
+    return getData(url, data);
+}
+/*
+    美食打卡介绍列表 详情
+    params:{}   
+*/
+export const getFoodClockApp = (id) => {
+    const url = `/foodClock/app/${id}`;
     const data = '';
     return getData(url, data);
 }
@@ -411,6 +429,15 @@ export const addTicketComment = (reqData) => {
 */
 export const getMessage = (reqData) => {
     const url = '/message/app/page';
+    const data = reqData;
+    return getData(url, data);
+}
+/*
+    点赞 type 1 旅游攻略 2 旅游住宿 3 景区门票 4 喀什礼物
+    params:{}
+*/
+export const addLikes = (id, reqData) => {
+    const url = `/likes/save/${id}`;
     const data = reqData;
     return getData(url, data);
 }

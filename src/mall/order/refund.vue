@@ -6,7 +6,10 @@
           <view class="left">订单编号：{{ order.ordersId }}</view>
           <view class="right">
             <view class="mall-status-orange" v-if="orderStatus == 1">
-              {{ order.expressNo ? '待审核' : '完善信息' }}
+              <template v-if="order.resultType == 1">待审核</template>
+              <template v-else>
+                {{ order.expressNo ? '待审核' : '完善信息' }}
+              </template>
             </view>
             <view class="mall-status-green" v-else-if="orderStatus == 2">
               已完成
@@ -49,7 +52,7 @@
           <view class="value">{{ order.createTime }}</view>
         </view>
       </view>
-      <view class="remark mall-card" v-if="orderStatus == 1">
+      <view class="remark mall-card" v-if="orderStatus == 1 && order.resultType != 1">
         <u-field
           v-if="!order.expressNo"
           v-model="expressNo"
@@ -72,7 +75,7 @@
       </view>
     </view>
     <view class="bottom-fixed">
-      <view class="btns" v-if="!order.expressNo">
+      <view class="btns" v-if="!order.expressNo && order.resultType != 1">
         <view style="width: 100%" class="btn btn-red" @click="express"
           >提交</view
         >
